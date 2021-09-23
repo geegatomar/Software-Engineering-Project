@@ -11,7 +11,7 @@ The tables present are:
 
 - Add the date and time of when each applicant has applied as well. Basically make each of them more detailed by using DB lookups.
 - Once a recruiter clicks on select candidate, the status of the application is changed to 'Selected'.
-  Also note that you must <b>update the status</b> in 2 different places (Imp to update both).
+  Also note that you must update the status in 2 different places (Imp to update both).
 - Proceed with next stage option for recruiter which allows then to send either a test or an interview link.
 - Send selection and rejection mail functionality. The function I have already implemented, you jst have to write the detailed mail and update it.
 - Do the google calendar API with nodejs. (for notifying about interview dates)
