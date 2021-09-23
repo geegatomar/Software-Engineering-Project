@@ -1,0 +1,28 @@
+<%- include('../../partials/header') %>
+
+<div class="jumbotron text-center">
+  <div class="container">
+    <i class="fas fa-key fa-6x"></i>
+    <h1 class="display-3">My Applied Jobs</h1>
+    <form class="form-inline" action="/search_for_recruiter" method="POST">
+        <input class="form-control mr-sm-2" name="search" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+    
+        <%jobs.forEach((job) => {%>
+            <hr>
+            <div class="form-group">
+                <p>Organization</p>
+                <p> <%= job.organization %> </p>
+                <p>Status</p>
+                <p> <%= job.status %> </p>
+                
+            </div>
+            <br>
+        <%})%>
+    <hr>
+    <a class="btn btn-light btn-lg" href="/home" role="button">Back To Home</a>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>

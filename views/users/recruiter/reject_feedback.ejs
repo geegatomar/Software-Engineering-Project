@@ -1,0 +1,26 @@
+<%- include('../../partials/header') %>
+
+<div class="jumbotron text-center">
+  <div class="container">
+    <i class="fas fa-key fa-6x"></i>
+    <h1 class="display-3">Fill Feedback for this Applicant</h1>
+    
+    
+
+            <form method="POST" action="/rejection_feedback/<%= jobId%>">
+                <div class="form-group">
+                    <label for="feedback"> Feedback for Applicant: </label>
+                    <br>
+                    <textarea class="form-control" name="feedback"> </textarea>
+                </div>
+                <input type="hidden" name="applicant" value="<%= applicant %>"> 
+                <button type="submit" class="btn btn-danger" >Reject and Send Feedback</button>
+            </form> 
+        
+    <hr>
+    <a class="btn btn-dark btn-lg" href="/create_job" role="button">Create New Job</a>
+    <a class="btn btn-light btn-lg" href="/home" role="button">Back To Home</a>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>

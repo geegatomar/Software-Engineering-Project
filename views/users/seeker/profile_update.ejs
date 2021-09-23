@@ -1,0 +1,35 @@
+<%- include('../../partials/header') %>
+
+<div class="jumbotron text-center">
+  <div class="container">
+    <i class="fas fa-key fa-6x"></i>
+    <h1 class="display-3">Update Profile Page</h1>
+    <hr>
+
+    <form action="/profile_edit" method="POST">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <p><%= email %></p>
+        </div>
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="name" class="form-control" name="name" placeholder= "<%= name %>">
+        </div>
+        <div class="form-group">
+            <label for="experience">Experience</label>
+            <input type="experience" class="form-control" name="experience" placeholder= "<%= experience %>">
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea type="description" class="form-control" name="description" placeholder= "<%= description %>"> </textarea>
+        </div>
+        <button type="submit" class="btn btn-dark">Update</button>
+    </form>
+
+
+    
+    <a class="btn btn-light btn-lg" href="/home" role="button">Back To Home</a>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>

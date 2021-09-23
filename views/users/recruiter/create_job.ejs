@@ -1,0 +1,31 @@
+<%- include('../../partials/header') %>
+
+<div class="jumbotron text-center">
+  <div class="container">
+    <i class="fas fa-key fa-6x"></i>
+    <h1 class="display-3">Update Profile Page</h1>
+    <hr>
+
+    <form action="/create_job" method="POST">
+
+        <div class="form-group">
+          <label for="title">Job Title</label>
+          <input type="name" class="form-control" name="title" placeholder="Software Engineer">
+        </div>
+        <div class="form-group">
+            <label for="description">Job Description</label>
+            <textarea type="description" class="form-control" name="description"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="expectations"> Expectations and Qualifications Required </label>
+            <textarea type="expectations" class="form-control" name="expectations"> </textarea>
+        </div>
+        <button type="submit" class="btn btn-dark">Update</button>
+    </form>
+
+    
+    <a class="btn btn-light btn-lg" href="/home" role="button">Back To Home</a>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>
