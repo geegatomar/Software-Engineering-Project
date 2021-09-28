@@ -17,6 +17,7 @@ The tables present are:
 - Do the google calendar API with nodejs. (for notifying about interview dates)
 - Add chatbot feature
 - One person should write all the unittests and integration tests
+- We can also generate log files to demonstarte the last stage of monitoring and management.
 
 Additional Info
 
