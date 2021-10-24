@@ -1,11 +1,42 @@
-
 body {
   background-color: #E8ECEF;
+
+}
+
+.wrap{
+  width:100vw;
+  height: 100vh;
+  background-image: url('/images/bg.jpg');
+  background-repeat: repeat;
+}
+
+.jumbotron{
+  background-image: url('/images/bg.jpg');
+  background-repeat: repeat;
+  color: white;
+  margin: 0; 
+}
+
+.buttons {
+  display: inline-block;
+}
+
+.b{
+  display: block;
+  margin: 5px;
+  width: 30vw;
+}
+
+.container{
+  color: black;
+  background-color: rgb(211, 244, 255);
+  border-radius: 25px;
+  padding: 15px;
 }
 
 .centered {
-    padding-top: 200px;
-    text-align: center;
+  padding-top: 200px;
+  text-align: center;
 }
 
 .secret-text {
@@ -13,4 +44,9 @@ body {
   font-size: 2rem;
   color: #fff;
   background-color: #000;
+}
+
+.search{
+  margin: 20px;
+  justify-content: center;
 }
