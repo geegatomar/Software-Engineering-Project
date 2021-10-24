@@ -1,0 +1,35 @@
+<%- include('../../partials/header') %>
+
+
+    <center>
+        <h3>Questions</h3>
+
+        <form action="/question_add/<%=jobId%>" method="POST">
+            <div class="form-group">
+                <input type="text" id="question" name="question" class="form-control" placeholder="Enter Question 1">
+            </div>
+            <div class="form-group">
+                <input type="text" id="op1" name="op1" class="form-control" placeholder="Enter option 1">
+            </div>
+            <div class="form-group">
+                <input type="text" id="op2" name="op2" class="form-control" placeholder="Enter option 2">
+            </div>
+            <div class="form-group">
+                <input type="text" id="op3" name="op3" class="form-control" placeholder="Enter option 3">
+            </div>
+            <div class="form-group">
+                <input type="text" id="op4" name="op4" class="form-control" placeholder="Enter option 4">
+            </div>
+            <div class="form-group">
+                <input type="text" id="answer" name="answer" class="form-control" placeholder="answer">
+            </div>
+            <button type="submit" class="btn btn-dark">Add</button>
+        </form>
+
+        <a class="btn btn-light btn-lg" href="/home" role="button">Back To Home</a>
+
+    </center>
+
+
+
+    <%- include('../../partials/footer') %>

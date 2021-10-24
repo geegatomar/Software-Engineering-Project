@@ -1,23 +1,30 @@
 {
-  "name": "Secrets_New",
+  "name": "Software-Engineering-Project",
   "version": "1.0.0",
-  "description": "",
+  "description": "The database is called userDB.",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Riya-tech/Software-Engineering-Project.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Riya-tech/Software-Engineering-Project/issues"
+  },
+  "homepage": "https://github.com/Riya-tech/Software-Engineering-Project#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
     "ejs": "^3.1.6",
     "express": "^4.17.1",
     "express-session": "^1.17.2",
-    "mongodb": "^4.1.1",
-    "mongoose": "^5.4.5",
-    "nodemailer": "^6.6.3"
+    "mongoose": "^6.0.11",
+    "nodemailer": "^6.7.0",
+    "nodemon": "^2.0.14"
   }
 }

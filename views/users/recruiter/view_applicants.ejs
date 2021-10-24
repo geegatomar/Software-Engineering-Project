@@ -1,40 +1,49 @@
 <%- include('../../partials/header') %>
 
-<div class="jumbotron text-center">
-  <div class="container">
-    <i class="fas fa-key fa-6x"></i>
-    <h1 class="display-3">Applicants for the job</h1>
-    <h2> <%= jobId %> </h2>
-    <form class="form-inline" action="/search_for_recruiter" method="POST">
-        <input class="form-control mr-sm-2" name="search" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
-    
-        <%applicants.forEach((applicant) => {%>
-            <hr>
-            <div class="form-group">
-                <p>Applicant Email</p>
-                <p> <%= applicant.email %> </p>
-                <p>Status</p>
-                <p> <%= applicant.status %> </p>
-            </div>
+    <div class="jumbotron text-center">
+        <div class="container">
+            <i class="fas fa-key fa-6x"></i>
+            <h1 class="display-3">Applicants for the job</h1>
+            <h2>
+                <%= jobId %>
+            </h2>
+            <form class="form-inline" action="/search_for_recruiter" method="POST">
+                <input class="form-control mr-sm-2" name="search" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
 
-            <form method="POST" action="/proceed_next_stage/<%= jobId%>">
-                <button type="submit" class="btn btn-info" name="applicant" value = "<%= applicant.email %>" >Proceed Next Stage</button>
-            </form>
-            <br>
-            <form method="POST" action="/select_applicant/<%= jobId%>">
-                <button type="submit" class="btn btn-success" name="applicant" value = "<%= applicant.email %>" >Select</button>
-            </form>
-            <br>
-            <form method="POST" action="/reject_applicant/<%= jobId%>">
-                <button type="submit" class="btn btn-danger" name="applicant" value = "<%= applicant.email %>" >Reject</button>
-            </form>
-            <br>
-        <%})%>
-    <hr>
-    <a class="btn btn-light btn-lg" href="/home" role="button">Back To Home</a>
-  </div>
-</div>
+            <%applicants.forEach((applicant) => {%>
+                <hr>
+                <div class="form-group">
+                    <p>Applicant Email</p>
+                    <p>
+                        <%= applicant.email %>
+                    </p>
+                    <p>Status</p>
+                    <p>
+                        <%= applicant.status %>
+                    </p>
+                </div>
 
-<%- include('../../partials/footer') %>
+                <form method="POST" action="/view_score/<%= jobId%>/<%= applicant.email%>">
+                    <button type="submit" class="btn btn-info" name="applicant" value="<%= applicant.email %>">View Applicant Score</button>
+                </form>
+                <form method="POST" action="/proceed_next_stage/<%= jobId%>">
+                    <button type="submit" class="btn btn-info" name="applicant" value="<%= applicant.email %>">Proceed Next Stage</button>
+                </form>
+                <br>
+                <form method="POST" action="/select_applicant/<%= jobId%>">
+                    <button type="submit" class="btn btn-success" name="applicant" value="<%= applicant.email %>">Select</button>
+                </form>
+                <br>
+                <form method="POST" action="/reject_applicant/<%= jobId%>">
+                    <button type="submit" class="btn btn-danger" name="applicant" value="<%= applicant.email %>">Reject</button>
+                </form>
+                <br>
+                <%})%>
+                    <hr>
+                    <a class="btn btn-light btn-lg" href="/home" role="button">Back To Home</a>
+        </div>
+    </div>
+
+    <%- include('../../partials/footer') %>

@@ -25,7 +25,7 @@ app.use(session({
 mongoose.connect("mongodb://localhost:27017/userDB", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useFindAndModify: false
+    //useFindAndModify: false
 });
 
 // The user_type in userSchema indicates if its a recruiter or a job seeker
@@ -91,25 +91,58 @@ const applicantSchema = {
 }
 const Applicant = new mongoose.model("Applicant", applicantSchema);
 
-app.get("/", function (req, res) {
+const eachquestion = {
+    question: String,
+    op1: String,
+    op2: String,
+    op3: String,
+    op4: String,
+    answer: String
+}
+
+const testSchema = {
+    jobId: String,
+    email: String,
+    organization: String,
+    questions: {
+        "type": "array",
+        "items": {
+            "type": eachquestion
+        }
+    },
+    applicants: {
+        "type": "array",
+        "items": {
+            "type": {
+                appemail: String,
+                score: Number,
+            }
+        }
+    }
+}
+
+
+const Tests = new mongoose.model("Tests", testSchema)
+
+app.get("/", function(req, res) {
     res.render("home")
 });
 
-app.get("/register", function (req, res) {
+app.get("/register", function(req, res) {
     res.render("register")
 });
 
-app.get("/login", function (req, res) {
+app.get("/login", function(req, res) {
     res.render("login")
 });
 
-app.post("/register", function (req, res) {
+app.post("/register", function(req, res) {
     console.log(req.body);
 
-    // If a user with thie email already exists
+    // If a user with this email already exists
     User.exists({
         email: req.body.username
-    }, function (err, foundResult) {
+    }, function(err, foundResult) {
         if (err) {
             console.log(err);
         } else {
@@ -144,7 +177,7 @@ app.post("/register", function (req, res) {
                         description: "unavailable",
                         jobsAppliedTo: []
                     });
-                    newSeeker.save(function (err) {
+                    newSeeker.save(function(err) {
                         if (err) {
                             console.log(err);
                         } else {
@@ -159,7 +192,7 @@ app.post("/register", function (req, res) {
                         organization: req.session.userOrganization,
                         jobs: []
                     });
-                    newJobs.save(function (err) {
+                    newJobs.save(function(err) {
                         if (err) {
                             console.log(err);
                         } else {
@@ -167,7 +200,7 @@ app.post("/register", function (req, res) {
                         }
                     })
                 }
-                newUser.save(function (err) {
+                newUser.save(function(err) {
                     if (err) {
                         console.log("UNABLE TO REGISTER USER")
                         console.log(err);
@@ -180,13 +213,13 @@ app.post("/register", function (req, res) {
     });
 });
 
-app.post("/login", function (req, res) {
+app.post("/login", function(req, res) {
     const username = req.body.username;
     const password = req.body.password;
 
     User.findOne({
         email: username
-    }, function (err, foundUser) {
+    }, function(err, foundUser) {
         if (err) {
             console.log("ERROR WHILE LOGIN")
             console.log(err);
@@ -214,7 +247,7 @@ app.post("/login", function (req, res) {
 });
 
 // This is the home page of either recruiter or seeker, depending on whose session has been logged in
-app.get("/home", function (req, res) {
+app.get("/home", function(req, res) {
     console.log(req.session);
     if (!('userEmail' in req.session)) {
         // Then the user is logged out, so redirect them to sign in page
@@ -234,12 +267,12 @@ app.get("/home", function (req, res) {
 })
 
 // To view my profile
-app.get("/profile", function (req, res) {
+app.get("/profile", function(req, res) {
     // We first fetch the required information from the DB
     const userEmail = req.session.userEmail;
     Seeker.findOne({
         email: userEmail
-    }, function (err, foundUser) {
+    }, function(err, foundUser) {
         if (err) {
             console.log(err);
         } else {
@@ -256,12 +289,12 @@ app.get("/profile", function (req, res) {
 });
 
 // To edit my profile
-app.get("/profile_edit", function (req, res) {
+app.get("/profile_edit", function(req, res) {
     // We first fetch the required information from the DB
     const userEmail = req.session.userEmail;
     Seeker.findOne({
         email: userEmail
-    }, function (err, foundUser) {
+    }, function(err, foundUser) {
         if (err) {
             console.log(err);
         } else {
@@ -277,7 +310,7 @@ app.get("/profile_edit", function (req, res) {
 });
 
 // The route for after you submit the form for editting profile
-app.post("/profile_edit", async function (req, res) {
+app.post("/profile_edit", async function(req, res) {
     console.log(req.body);
     const userEmail = req.session.userEmail;
 
@@ -292,7 +325,7 @@ app.post("/profile_edit", async function (req, res) {
 });
 
 // For seeker
-app.get("/view_all_jobs", async function (req, res) {
+app.get("/view_all_jobs", async function(req, res) {
     allJobsOfCompany = await Jobs.find();
     console.log(allJobsOfCompany);
     res.render("users/seeker/view_all_jobs", {
@@ -300,14 +333,14 @@ app.get("/view_all_jobs", async function (req, res) {
     });
 });
 
-app.post("/view_job/:jobId", function (req, res) {
+app.post("/view_job/:jobId", function(req, res) {
     const jobId = req.params.jobId;
     console.log(req.params.jobId);
     console.log(req.body.organization);
     console.log(req.body.email);
     Jobs.findOne({
         email: req.body.email
-    }, function (err, foundJobs) {
+    }, function(err, foundJobs) {
         if (err) {
             console.log(err);
         } else {
@@ -328,7 +361,7 @@ app.post("/view_job/:jobId", function (req, res) {
     // res.send("Building");
 });
 
-app.post("/apply_for_job/:jobId", async function (req, res) {
+app.post("/apply_for_job/:jobId", async function(req, res) {
     console.log(req.params.jobId);
     console.log(req.body);
     const applicant = req.session.userEmail;
@@ -362,7 +395,7 @@ app.post("/apply_for_job/:jobId", async function (req, res) {
 
 });
 
-app.get("/view_my_applied_jobs", async function (req, res) {
+app.get("/view_my_applied_jobs", async function(req, res) {
     const email = req.session.userEmail;
     const foundSeeker = await Seeker.findOne({
         email: email
@@ -373,12 +406,68 @@ app.get("/view_my_applied_jobs", async function (req, res) {
     });
 });
 
+app.post("/view_test/:jobId", function(req, res) {
+    const jobId = req.params.jobId;
+    Tests.findOne({
+        jobId: jobId
+    }, function(err, foundtest) {
+        if (err) {
+            console.log(err);
+        }
+        console.log(jobId);
+        res.render("users/seeker/view_test", {
+            jobId: jobId,
+            questions: foundtest.questions
+        });
+    });
+
+});
+
+app.post("/give_test/:jobId", async function(req, res) {
+
+    count = 0;
+    const foundtest = await Tests.findOne({
+        jobId: req.params.jobId
+    });
+
+    const ans = req.body;
+    const akey = Object.keys(ans);
+    const avalue = Object.values(ans);
+    i = 0;
+    foundtest.questions.forEach((ques) => {
+        console.log(i);
+        if (ques.answer == avalue[i]) {
+            count = count + 1;
+            console.log("Found match");
+        }
+        i = i + 1;
+    });
+    console.log("See count");
+    console.log(count);
+
+    const app = {
+        "appemail": req.session.userEmail,
+        "score": count
+    }
+    console.log("hey for update");
+    console.log(app)
+    const updatescore = await Tests.findOneAndUpdate({
+        jobId: req.params.jobId
+    }, {
+        $push: {
+            applicants: app
+        }
+    });
+    console.log(updatescore);
+    res.send("You have sucessfully completed and submitted your test!!");
+});
+
 // For recruiter
-app.get("/create_job", function (req, res) {
+app.get("/create_job", function(req, res) {
     res.render("users/recruiter/create_job");
 });
 
-app.post("/create_job", async function (req, res) {
+app.post("/create_job", async function(req, res) {
     // Create job and add it to the DB
     console.log(req.body);
 
@@ -399,13 +488,23 @@ app.post("/create_job", async function (req, res) {
     });
     await newApplicant.save();
 
+    //when a new job is created add it's entry to the test table
+    const newtest = new Tests({
+        jobId: id,
+        email: req.session.userEmail,
+        organization: req.session.userOrganization,
+        questions: [],
+        applicants: []
+    });
+    await newtest.save();
+
     Jobs.findOneAndUpdate({
         email: req.session.userEmail
     }, {
         $push: {
             jobs: job
         }
-    }, function (err, foundJobs) {
+    }, function(err, foundJobs) {
         if (err) {
             console.log(err);
         } else {
@@ -415,10 +514,10 @@ app.post("/create_job", async function (req, res) {
     });
 });
 
-app.get("/view_my_postings", function (req, res) {
+app.get("/view_my_postings", function(req, res) {
     Jobs.findOne({
         email: req.session.userEmail
-    }, function (err, updatedJobs) {
+    }, function(err, updatedJobs) {
         if (err) {
             console.log(err);
         }
@@ -430,11 +529,11 @@ app.get("/view_my_postings", function (req, res) {
     });
 });
 
-app.post("/search_for_recruiter", function (req, res) {
+app.post("/search_for_recruiter", function(req, res) {
     console.log(req.body);
     Jobs.findOne({
         email: req.session.userEmail
-    }, function (err, foundJobs) {
+    }, function(err, foundJobs) {
         matchedJobs = [];
         foundJobs.jobs.forEach((job) => {
             if (job.title == req.body.search) {
@@ -447,13 +546,41 @@ app.post("/search_for_recruiter", function (req, res) {
     });
 });
 
-app.post("/view_applicants/:jobId", async function (req, res) {
+
+app.post("/search_for_seeker", async function(req, res) {
+    console.log(req.body);
+    foundJobs = await Jobs.find();
+    console.log(foundJobs);
+    final = []
+
+    foundJobs.forEach((jobs) => {
+        const matchedJobs = new Jobs({
+            email: jobs.email,
+            organization: jobs.organization,
+            jobs: []
+        });
+        jobs.jobs.forEach((job) => {
+            if (job.title == req.body.search) {
+                matchedJobs.jobs.push(job);
+            }
+        });
+        final.push(matchedJobs);
+    });
+    console.log("yessss");
+    console.log(final);
+    res.render("users/seeker/view_all_jobs", {
+        allJobsOfCompany: final
+    });
+
+});
+
+app.post("/view_applicants/:jobId", async function(req, res) {
     console.log(req.params.jobId);
     const jobId = req.params.jobId;
 
     Applicant.findOne({
         jobId: jobId
-    }, function (err, foundApplicant) {
+    }, function(err, foundApplicant) {
         if (err) {
             console.log(err);
         } else {
@@ -466,7 +593,92 @@ app.post("/view_applicants/:jobId", async function (req, res) {
     })
 });
 
-app.post("/reject_applicant/:jobId", function (req, res) {
+app.post("/test_create/:jobId", function(req, res) {
+    const jobId = req.params.jobId;
+    Tests.findOne({
+        jobId: jobId
+    }, function(err, foundtest) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log();
+            res.render("users/recruiter/create_test", {
+                questions: foundtest.questions,
+                jobId: jobId
+            });
+        }
+    })
+});
+
+app.post("/add_question/:jobId", function(req, res) {
+    const jobId = req.params.jobId;
+    console.log(jobId);
+
+    res.render("users/recruiter/add_question", {
+        jobId: jobId
+    });
+
+});
+
+app.post("/question_add/:jobId", function(req, res) {
+    console.log(req.body);
+    const jobId = req.params.jobId;
+    const ques = {
+        "question": req.body.question,
+        "op1": req.body.op1,
+        "op2": req.body.op2,
+        "op3": req.body.op3,
+        "op4": req.body.op4,
+        "answer": req.body.answer
+    }
+    console.log(req.body.answer)
+    Tests.findOneAndUpdate({
+        jobId: jobId
+    }, {
+        $push: {
+            questions: ques
+        }
+    }, function(err, foundtests) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(foundtests);
+            res.render("users/recruiter/create_test", {
+                jobId: jobId,
+                questions: foundtests.questions
+            });
+        }
+    });
+
+});
+
+app.post("/view_score/:jobId/:mailid", function(req, res) {
+    console.log("hey");
+    const jobId = req.params.jobId;
+    const mailid = req.params.mailid;
+    Tests.findOne({
+        jobId: jobId
+    }, function(err, foundtest) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log();
+            foundtest.applicants.forEach((applicant) => {
+                if (mailid == applicant.appemail) {
+                    score = applicant.score;
+                }
+            });
+            res.render("users/recruiter/view_score", {
+                score: score
+            });
+        }
+    })
+
+
+});
+
+
+app.post("/reject_applicant/:jobId", function(req, res) {
     console.log(req.body);
     console.log(req.params.jobId);
     res.render("users/recruiter/reject_feedback", {
@@ -475,7 +687,7 @@ app.post("/reject_applicant/:jobId", function (req, res) {
     });
 });
 
-app.post("/rejection_feedback/:jobId", function (req, res) {
+app.post("/rejection_feedback/:jobId", function(req, res) {
     console.log(req.body.applicant);
     console.log(req.params.jobId);
 
@@ -485,7 +697,7 @@ app.post("/rejection_feedback/:jobId", function (req, res) {
     res.send("Rejection mail has been sent");
 });
 
-app.post("/select_applicant/:jobId", function (req, res) {
+app.post("/select_applicant/:jobId", function(req, res) {
     console.log(req.body);
     console.log(req.params.jobId);
 
@@ -495,7 +707,7 @@ app.post("/select_applicant/:jobId", function (req, res) {
     res.send("Selection mail has been sent");
 });
 
-app.post("/proceed_next_stage/:jobId", function (req, res) {
+app.post("/proceed_next_stage/:jobId", function(req, res) {
     console.log(req.body);
     console.log(req.params.jobId);
 
@@ -508,7 +720,7 @@ app.post("/proceed_next_stage/:jobId", function (req, res) {
     });
 });
 
-app.post("/send_interview_invites", function (req, res) {
+app.post("/send_interview_invites", function(req, res) {
     console.log(req.body);
     console.log(req.body.applicant);
     const interviewersEmail = req.body.email;
@@ -533,12 +745,12 @@ app.post("/send_interview_invites", function (req, res) {
     res.send("Mail has been sent");
 });
 
-app.get("/logout", function (req, res) {
+app.get("/logout", function(req, res) {
     // Destroying the session when we logout
     req.session.destroy();
     res.redirect("/");
 });
 
-app.listen(3000, function () {
+app.listen(3000, function() {
     console.log("Server listening on port 3000");
 });
