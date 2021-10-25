@@ -1,4 +1,15 @@
-<%- include('../../partials/header') %>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Secrets</title>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
 <div class="wrap">
 <div class="jumbotron text-center">
   <div class="container">
@@ -12,7 +23,7 @@
     
         <%applicants.forEach((applicant) => {%>
             <hr>
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <p>Applicant Email</p>
                 <p> <%= applicant.email %> </p>
                 <p>Status</p>
@@ -22,15 +33,31 @@
             <form method="POST" action="/proceed_next_stage/<%= jobId%>">
                 <button type="submit" class="btn btn-info" name="applicant" value = "<%= applicant.email %>" >Proceed Next Stage</button>
             </form>
-            <br>
             <form method="POST" action="/select_applicant/<%= jobId%>">
                 <button type="submit" class="btn btn-success" name="applicant" value = "<%= applicant.email %>" >Select</button>
             </form>
-            <br>
             <form method="POST" action="/reject_applicant/<%= jobId%>">
                 <button type="submit" class="btn btn-danger" name="applicant" value = "<%= applicant.email %>" >Reject</button>
-            </form>
-            <br>
+            </form> -->
+            <div class="row">
+                <div class="col-sm-8">
+                  <div class="card">
+                    <div class="card-body">
+                      <p class="card-text"> <b>Applicant Email: </b><%= applicant.email %> </p>
+                      <p class="card-text"> <b>Applicant Status: </b><%= applicant.status %> </p>
+                      <form class="choose" method="POST" action="/proceed_next_stage/<%= jobId%>">
+                        <button type="submit" class="btn btn-info" name="applicant" value = "<%= applicant.email %>" >Proceed Next Stage</button>
+                    </form>
+                    <form class="choose" method="POST" action="/select_applicant/<%= jobId%>">
+                        <button type="submit" class="btn btn-success" name="applicant" value = "<%= applicant.email %>" >Select</button>
+                    </form>
+                    <form class="choose" method="POST" action="/reject_applicant/<%= jobId%>">
+                        <button type="submit" class="btn btn-danger" name="applicant" value = "<%= applicant.email %>" >Reject</button>
+                    </form>
+                    </div>
+                  </div>
+                </div>
+            </div>
         <%})%>
     <hr>
     <a class="btn btn-light btn-lg" href="/home" role="button">Back To Home</a>

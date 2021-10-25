@@ -11,13 +11,24 @@
     
         <%jobs.forEach((job) => {%>
             <hr>
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <p>Organization</p>
                 <p> <%= job.organization %> </p>
                 <p>Status</p>
-                <p> <%= job.status %> </p>
-                
-            </div>
+                <p> <%= job.status %> </p>    
+            </div> -->
+            
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title"> <%= job.organization %> </h5>
+                    <hr>
+                    <p class="card-text"> <b>Status: </b><%= job.status %> </p>
+                  </div>
+                </div>
+              </div>
+          </div>
             <br>
         <%})%>
     <hr>

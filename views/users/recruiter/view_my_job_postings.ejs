@@ -10,7 +10,7 @@
     </form>
     <%jobs.forEach((job) => {%>
         <hr>
-        <div class="form-group">
+        <!-- <div class="form-group">
             <b>Title</b>
             <p> <%= job.title %> </p>
             <b> Job Description </b>
@@ -21,7 +21,24 @@
             <form method="POST" action="/view_applicants/<%= job.id%>">
                 <button type="submit" class="btn btn-info" >View Applicants</button>
             </form>
-        </div>
+        </div> -->
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title"> <%= job.title %> </h5>
+                <hr>
+                <b> Job Description </b>
+                <p> <%= job.description %> </p>
+                <b> Expectations and Qualifications </b>
+                <p> <%= job.expectations %> </p>
+                <form method="POST" action="/view_applicants/<%= job.id%>">
+                  <button type="submit" class="btn btn-info" >View Applicants</button>
+              </form>
+              </div>
+            </div>
+          </div>
+      </div>
         <br>
     <%});%>
     <hr>
