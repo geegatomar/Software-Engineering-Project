@@ -866,23 +866,21 @@ app.post("/send_interview_invites", function(req, res) {
     console.log(req.body.applicant);
     const interviewersEmail = req.body.email;
     const applicantsEmail = req.body.applicant;
-
-    // TODO: Send google calendar invites, and automated emails.
-
+    var org = req.session.userOrganization;
     x = req.body.date;
     var dateObj = new Date(x);
 
     // TODO: Make this invite more specific by mentioning which company and what role they have applied to
-    const subject = "Congratulation! Next Steps: Interview with the team";
+    const subject = "Congratulation! Next Steps: Interview with the team of " + org;
     const text = "Congratulations! You have been selected for the next stage of the interview.\
     The interview will be scheduled on" + dateObj.toString() + ". All the very best!";
 
     // Send mail to applicant
-    sendEmail(applicantsEmail, text, subject);
+    sendEmail(applicantsEmail, text, subject, dateObj,org);
 
     // TODO: Make these mails more descriptive, and have more data by fetching from the dbs.
 
-    sendEmail(interviewersEmail, "You have to take an interview on " + dateObj.toString(), "Interviewing Details");
+    sendEmail(interviewersEmail, "You have to take an interview on " + dateObj.toString(), "Interviewing Details", dateObj,org);
     res.send("Mail has been sent");
 });
 
