@@ -25,6 +25,9 @@
                     <h5 class="card-title"> <%= job.organization %> </h5>
                     <hr>
                     <p class="card-text"> <b>Status: </b><%= job.status %> </p>
+                    <form method="POST" action="/view_test/<%=job.id%>">
+                      <button type="submit" class="btn btn-info">View test</button>
+                  </form>
                   </div>
                 </div>
               </div>

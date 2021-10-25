@@ -1,0 +1,32 @@
+<%- include('../../partials/header') %>
+
+    <h2>Test</h2>
+
+    <form action="/give_test/<%=jobId%>" method="POST">
+        <h2>Test</h2>
+        <%questions.forEach((question)=>{%>
+            <div class="form-group">
+                <p>
+                    <%=question.question%>
+                </p>
+                <input type="radio" id="op1" name="<%=question.question%>" class="form-control" value="<%=question.op1%>">
+                <label for="<%=question.op1%>"><%=question.op1%></label>
+                <br>
+                <input type="radio" id="op2" name="<%=question.question%>" class="form-control" value="<%=question.op2%>">
+                <label for="<%=question.op2%>"><%=question.op2%></label>
+                <br>
+                <input type="radio" id="op3" name="<%=question.question%>" class="form-control" value="<%=question.op3%>">
+                <label for="<%=question.op3%>"><%=question.op3%></label>
+                <br>
+                <input type="radio" id="op4" name="<%=question.question%>" class="form-control" value="<%=question.op4%>">
+                <label for="<%=question.op4%>"><%=question.op4%></label>
+                <br>
+            </div>
+
+            <%})%>
+                <button type="submit" class="btn btn-dark">Submit</button>
+    </form>
+
+
+
+    <%- include('../../partials/footer') %>

@@ -34,7 +34,10 @@
                 <p> <%= job.expectations %> </p>
                 <form method="POST" action="/view_applicants/<%= job.id%>">
                   <button type="submit" class="btn btn-info" >View Applicants</button>
-              </form>
+                </form>
+                <form method="POST" action="/test_create/<%=job.id%>">
+                    <button type="submit" class="btn btn-info">Create test</button>
+                </form>
               </div>
             </div>
           </div>

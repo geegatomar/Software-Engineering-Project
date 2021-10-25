@@ -1,0 +1,56 @@
+<%- include('../../partials/header') %>
+
+
+    <center>
+
+
+        <h4>Questions</h4>
+        <%questions.forEach((question)=>{%>
+            <hr>
+            <div class="form-group">
+                <p>Question</p>
+                <p>
+                    <%=question.question%>
+                </p>
+                <p>Option 1</p>
+                <p>
+                    <%=question.op1%>
+                </p>
+                <p>Option 2</p>
+                <p>
+                    <%=question.op2%>
+                </p>
+                <p>Option 3</p>
+                <p>
+                    <%=question.op3%>
+                </p>
+                <p>Option 4</p>
+                <p>
+                    <%=question.op4%>
+                </p>
+                <p>Answer</p>
+                <p>
+                    <%=question.answer%>
+                </p>
+            </div>
+            <br>
+
+            <%})%>
+
+                <form method="POST" action="/add_question/<%=jobId%>">
+                    <button type="submit" class="btn btn-info">Add question</button>
+                </form>
+                <a class="btn btn-light btn-lg" href="/home" role="button">Back To Home</a>
+
+
+    </center>
+
+
+
+
+
+
+
+
+
+    <%- include('../../partials/footer') %>
