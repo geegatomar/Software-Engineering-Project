@@ -819,9 +819,13 @@ app.post("/view_score/:jobId/:mailid", function(req, res) {
 });
 
 
-app.post("/reject_applicant/:jobId", function(req, res) {
+app.post("/reject_applicant/:jobId", async function(req, res) {
     console.log(req.body);
     console.log(req.params.jobId);
+    const jobId = req.params.jobId;
+    const applicantsEmail = req.body.applicant;
+    const updatestat = await Seeker.findOneAndUpdate({ email: applicantsEmail, "jobsAppliedTo.id": jobId }, { $set: { "jobsAppliedTo.$.status": "Rejected" } });
+    const updateapp = await Applicant.findOneAndUpdate({ jobId: jobId, "applicants.email": applicantsEmail }, { $set: { "applicants.$.status": "Rejected" } });
     res.render("users/recruiter/reject_feedback", {
         jobId: req.params.jobId,
         applicant: req.body.applicant
@@ -833,18 +837,20 @@ app.post("/rejection_feedback/:jobId", function(req, res) {
     console.log(req.params.jobId);
 
     // TODO: Send rejection mail
-    // TODO: And the remove this applicant from list and update status to rejected
+
 
     res.send("Rejection mail has been sent");
 });
 
-app.post("/select_applicant/:jobId", function(req, res) {
+app.post("/select_applicant/:jobId", async function(req, res) {
+    const jobId = req.params.jobId;
     console.log(req.body);
     console.log(req.params.jobId);
+    var org = req.session.userOrganization;
     const applicantsEmail = req.body.applicant;
-    // TODO: Send selection mail
-    // TODO: Update status in both places
-
+    //Send email
+    const updatestat = await Seeker.findOneAndUpdate({ email: applicantsEmail, "jobsAppliedTo.id": jobId }, { $set: { "jobsAppliedTo.$.status": "Selected" } });
+    const updateapp = await Applicant.findOneAndUpdate({ jobId: jobId, "applicants.email": applicantsEmail }, { $set: { "applicants.$.status": "Selected" } });
     res.send("Selection mail has been sent");
 });
 
@@ -876,11 +882,11 @@ app.post("/send_interview_invites", function(req, res) {
     The interview will be scheduled on" + dateObj.toString() + ". All the very best!";
 
     // Send mail to applicant
-    sendEmail(applicantsEmail, text, subject, dateObj,org);
+    sendEmail(applicantsEmail, text, subject, dateObj, org);
 
     // TODO: Make these mails more descriptive, and have more data by fetching from the dbs.
 
-    sendEmail(interviewersEmail, "You have to take an interview on " + dateObj.toString(), "Interviewing Details", dateObj,org);
+    sendEmail(interviewersEmail, "You have to take an interview on " + dateObj.toString(), "Interviewing Details", dateObj, org);
     res.send("Mail has been sent");
 });
 
