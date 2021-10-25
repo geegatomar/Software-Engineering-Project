@@ -1,34 +1,35 @@
-<%- include('../../partials/header') %>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
 
+<head>
+    <meta charset="utf-8">
+    <title>Recruiters Suite</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
 
-    <center>
-
-
+<body>
+    
+<div class="wrap test">
+    <div class="container">
         <h4>Questions</h4>
         <%questions.forEach((question)=>{%>
             <hr>
-            <div class="form-group">
-                <p>Question</p>
+            <div class="question form-group">
+                <h6>Question</h6>
                 <p>
                     <%=question.question%>
                 </p>
-                <p>Option 1</p>
-                <p>
-                    <%=question.op1%>
-                </p>
-                <p>Option 2</p>
-                <p>
-                    <%=question.op2%>
-                </p>
-                <p>Option 3</p>
-                <p>
-                    <%=question.op3%>
-                </p>
-                <p>Option 4</p>
-                <p>
-                    <%=question.op4%>
-                </p>
-                <p>Answer</p>
+                <hr>
+                <ul class="options">
+                <li>Option 1: <%=question.op1%></li>
+                <li>Option 2: <%=question.op2%></li>
+                <li>Option 3: <%=question.op3%></li>
+                <li>Option 4: <%=question.op4%></li>
+                </ul>
+                <br>
+                <h6>Answer</h6>
                 <p>
                     <%=question.answer%>
                 </p>
@@ -36,14 +37,16 @@
             <br>
 
             <%})%>
-
-                <form method="POST" action="/add_question/<%=jobId%>">
+            <ul class="idk col-12">
+                <form class="add" method="POST" action="/add_question/<%=jobId%>">
                     <button type="submit" class="btn btn-info">Add question</button>
                 </form>
-                <a class="btn btn-light btn-lg" href="/home" role="button">Back To Home</a>
+                <a class="backhome btn btn-light btn-lg" href="/home" role="button">Back To Home</a>
+            </ul>
+            </div>
+        </div>
 
 
-    </center>
 
 
 

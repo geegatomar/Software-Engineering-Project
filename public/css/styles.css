@@ -17,6 +17,7 @@ body {
   margin: 0; 
 }
 
+
 .buttons {
   display: inline-block;
 }
@@ -34,6 +35,19 @@ body {
   padding: 15px;
 }
 
+.home{
+  height: 30vw;
+}
+
+.test{
+  margin: 20px;
+}
+
+.question{
+  padding: 10px;
+  background-color: white;
+  border-radius: 15px;
+}
 .centered {
   padding-top: 200px;
   text-align: center;
@@ -57,4 +71,32 @@ body {
 
 .choose{
   display: inline;
+}
+
+.idk{
+  display: inline;
+  justify-content: center;
+}
+.add{
+  display: inline;
+}
+.backhome{
+  display: inline;
+}
+
+.options{
+  list-style-type: circle;
+}
+
+.radio{
+  width:20px;
+  height:20px;
+}
+
+.form-control{
+  display:inline-block;
+}
+
+h2{
+  text-align: center;
 }
