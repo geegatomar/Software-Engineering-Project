@@ -40,7 +40,8 @@ body {
 }
 
 .test{
-  margin: 20px;
+  margin-top: 20px;
+  justify-content: center;
 }
 
 .question{
@@ -62,6 +63,7 @@ body {
 
 .search{
   margin: 20px;
+  display: flex;
   justify-content: center;
 }
 
@@ -99,4 +101,49 @@ body {
 
 h2{
   text-align: center;
+}
+
+.top{
+  border: 3px solid black;
+  padding: 10px;
+  margin: 10px;
+}
+
+.row {
+  margin: 5px;
+}
+
+.top {
+  border: 3px solid black;
+  padding: 10px;
+}
+
+.coding-question {
+  border: 3px solid black;
+}
+
+textarea {
+  width: 50vw;
+  height: 35vw;
+  background-color: black;
+  color: white;
+}
+
+select {
+  border: none;
+}
+
+.wrap-no{
+  margin: 0;
+  background-color: rgb(211, 244, 255);
+}
+
+.mul{
+  background-color: white;
+}
+
+.coding-submit{
+  width: 50vw;
+  display: flex;
+  justify-content: end;
 }

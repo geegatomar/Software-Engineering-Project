@@ -16,7 +16,7 @@
     <i class="fas fa-key fa-6x"></i>
     <h1 class="display-3">Applicants for the job</h1>
     <h2> <%= jobId %> </h2>
-    <form class="form-inline" action="/search_for_recruiter" method="POST">
+    <form class="search form-inline" action="/search_for_recruiter" method="POST">
         <input class="form-control mr-sm-2" name="search" type="search" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
     </form>
@@ -45,6 +45,9 @@
                     <div class="card-body">
                       <p class="card-text"> <b>Applicant Email: </b><%= applicant.email %> </p>
                       <p class="card-text"> <b>Applicant Status: </b><%= applicant.status %> </p>
+                      <form class="choose" method="POST" action="/view_score/<%= jobId%>/<%= applicant.email%>">
+                        <button type="submit" class="btn btn-info" name="applicant" value="<%= applicant.email %>">View Applicant Score</button>
+                    </form>
                       <form class="choose" method="POST" action="/proceed_next_stage/<%= jobId%>">
                         <button type="submit" class="btn btn-info" name="applicant" value = "<%= applicant.email %>" >Proceed Next Stage</button>
                     </form>
