@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 let sendEmail = require(__dirname + "/email-send.js");
-
+var axios = require('axios');
 const app = express();
 
 app.use(express.static("public"));
@@ -100,6 +100,13 @@ const eachquestion = {
     answer: String
 }
 
+const codingproblem = {
+    problemname: String,
+    description: String,
+    testcases: String,
+    expectedoutput: String
+}
+
 const testSchema = {
     jobId: String,
     email: String,
@@ -116,9 +123,14 @@ const testSchema = {
             "type": {
                 appemail: String,
                 score: Number,
+                language: String,
+                input: String,
+                codingscore: Number
             }
         }
-    }
+    },
+    problem: codingproblem
+
 }
 
 
@@ -390,6 +402,23 @@ app.post("/apply_for_job/:jobId", async function(req, res) {
             }
         }
     });
+
+    const apps = {
+        "appemail": req.session.userEmail,
+        "score": null,
+        "language": null,
+        "input": null,
+        "codingscore": null
+    }
+    const updatedtest = await Tests.findOneAndUpdate({
+            jobId: req.params.jobId
+        }, {
+            $push: {
+                applicants: apps
+            }
+        }
+
+    );
     console.log(updatedApplicant);
     res.send("Your application has been successfully submitted. Thank you for applying!");
 
@@ -429,7 +458,7 @@ app.post("/give_test/:jobId", async function(req, res) {
     const foundtest = await Tests.findOne({
         jobId: req.params.jobId
     });
-
+    const jobId = req.params.jobId;
     const ans = req.body;
     const akey = Object.keys(ans);
     const avalue = Object.values(ans);
@@ -447,20 +476,97 @@ app.post("/give_test/:jobId", async function(req, res) {
 
     const app = {
         "appemail": req.session.userEmail,
-        "score": count
+        "score": count,
+        "language": foundtest.applicants.language,
+        "input": foundtest.applicants.input,
+        "codingscore": foundtest.applicants.codingscore
     }
     console.log("hey for update");
-    console.log(app)
-    const updatescore = await Tests.findOneAndUpdate({
-        jobId: req.params.jobId
-    }, {
-        $push: {
-            applicants: app
-        }
-    });
+    console.log(app);
+    const updatescore = await Tests.findOneAndUpdate({ jobId: jobId, "applicants.appemail": req.session.userEmail }, { $set: { "applicants.$.score": count } });
     console.log(updatescore);
     res.send("You have sucessfully completed and submitted your test!!");
 });
+
+app.post("/view_codingtest/:jobId", function(req, res) {
+    const jobId = req.params.jobId;
+    Tests.findOne({
+        jobId: jobId
+    }, function(err, foundtest) {
+        if (err) {
+            console.log(err);
+        }
+        res.render("users/seeker/coding", {
+            jobId: jobId,
+            username: req.session.userEmail,
+            probname: foundtest.problem.problemname,
+            description: foundtest.problem.description
+        });
+    });
+});
+
+app.post("/getlanguage/:jobId", async function(req, res) {
+    const jobId = req.params.jobId;
+    console.log(req.body);
+
+    const updatescore = await Tests.findOne({
+        jobId: jobId,
+    });
+
+    console.log(updatescore);
+    const language = req.body.languages;
+    const inputcode = req.body.inputs;
+    const inputcases = updatescore.problem.testcases;
+
+    let data = {
+        "code": inputcode,
+        "language": language,
+        "input": inputcases
+    }
+    console.log(data);
+    let config = {
+        method: 'post',
+        url: 'https://codexweb.netlify.app/.netlify/functions/enforceCode',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data: data
+    };
+    const response = await axios(config)
+    console.log(response.data);
+    const op = response.data
+        // axios(config)
+        //     .then(function(response) {
+        //         console.log(response.data);
+        //         console.log("hey1");
+        //         op = response.data;
+        //     })
+        //     .catch(function(error) {
+        //         console.log(error);
+        //     });
+    console.log("seeop");
+    console.log(op);
+    let sc = 0;
+    console.log(op.output);
+    console.log(updatescore.problem.expectedoutput);
+    if (op.output === updatescore.problem.expectedoutput) {
+        console.log("heyy");
+        sc = 10;
+    } else {
+        sc = 0;
+    }
+    console.log("see score");
+    console.log(sc);
+    const us = await Tests.findOneAndUpdate({
+        jobId: jobId,
+        "applicants.appemail": req.session.userEmail
+    }, { $set: { "applicants.$.codingscore": sc } });
+
+    res.send("Thank you for taking the test your test has been successfully submitted");
+
+});
+
+
 
 // For recruiter
 app.get("/create_job", function(req, res) {
@@ -488,13 +594,20 @@ app.post("/create_job", async function(req, res) {
     });
     await newApplicant.save();
 
-    //when a new job is created add it's entry to the test table
+    const prob = {
+            "problemname": "Needstobeset",
+            "description": "Needstobeset",
+            "testcases": "Needstobeset",
+            "expectedoutput": "Needstobeset"
+        }
+        //when a new job is created add it's entry to the test table
     const newtest = new Tests({
         jobId: id,
         email: req.session.userEmail,
         organization: req.session.userOrganization,
         questions: [],
-        applicants: []
+        applicants: [],
+        problem: prob
     });
     await newtest.save();
 
@@ -609,6 +722,32 @@ app.post("/test_create/:jobId", function(req, res) {
         }
     })
 });
+app.post("/codingtest_create/:jobId", function(req, res) {
+    const jobId = req.params.jobId;
+    res.render("users/recruiter/create_codingtest", {
+        jobId: jobId
+    });
+});
+
+app.post("/create_codingtest/:jobId", async function(req, res) {
+    const jobId = req.params.jobId;
+    console.log("hey2");
+    const prob = {
+        "problemname": req.body.name,
+        "description": req.body.description,
+        "testcases": req.body.testcases,
+        "expectedoutput": req.body.expectedoutput
+    }
+    console.log("hey1");
+    const foundtest = await Tests.findOneAndUpdate({
+        jobId: jobId
+    }, {
+        problem: prob
+    });
+    console.log(prob);
+    console.log(foundtest);
+    res.send("Successfully added the problem");
+});
 
 app.post("/add_question/:jobId", function(req, res) {
     const jobId = req.params.jobId;
@@ -666,10 +805,12 @@ app.post("/view_score/:jobId/:mailid", function(req, res) {
             foundtest.applicants.forEach((applicant) => {
                 if (mailid == applicant.appemail) {
                     score = applicant.score;
+                    codingscore = applicant.codingscore;
                 }
             });
             res.render("users/recruiter/view_score", {
-                score: score
+                score: score,
+                codingscore: codingscore
             });
         }
     })
@@ -700,7 +841,7 @@ app.post("/rejection_feedback/:jobId", function(req, res) {
 app.post("/select_applicant/:jobId", function(req, res) {
     console.log(req.body);
     console.log(req.params.jobId);
-
+    const applicantsEmail = req.body.applicant;
     // TODO: Send selection mail
     // TODO: Update status in both places
 
