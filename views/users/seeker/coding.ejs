@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+        .row {
+            margin: 5px;
+        }
+        
+        .top {
+            border: 3px solid black;
+            padding: 10px;
+        }
+        
+        .question {
+            border: 3px solid black;
+        }
+        
+        textarea {
+            width: 57vw;
+            height: 35vw;
+            background-color: black;
+            color: white;
+        }
+        
+        select {
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row top">
+            <div class="col">
+                <p>
+                    <%= username%>
+                </p>
+            </div>
+            <div class="col-3">
+                <form method="POST" action="/getlanguage/<%=jobId%>" id="input">
+                    <label for="languages">Choose a language:</label>
+                    <select name="languages" id="languages">
+                  <option name="option" value="c">C</option>
+                  <option name="option" value="cpp">Cpp</option>
+                  <option name="option" value="java">Java</option>
+                  <option name="option" value="py">Python</option>
+                </select>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4 question">
+                <h5>
+                    <%=probname%>
+                </h5>
+                <p>
+                    <%=description%>
+                </p>
+            </div>
+            <form>
+                <div class="col input">
+                    <label for="inputs">Input:</label><br>
+                    <textarea name="inputs" form="input"></textarea>
+                    <br>
+                    <input type="submit" value="Submit" form="input">
+                </div>
+            </form>
+
+        </div>
+    </div>
+</body>
+
+</html>
