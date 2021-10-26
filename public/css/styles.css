@@ -1,11 +1,57 @@
-
 body {
-  background-color: #E8ECEF;
+  background-image: url('/images/bg.jpg');
+  background-repeat: repeat;
 }
 
+.wrap{
+  width:100vw;
+  height: 100vh;
+  background-image: url('/images/bg.jpg');
+  background-repeat: repeat;
+}
+
+.jumbotron{
+  background-image: url('/images/bg.jpg');
+  background-repeat: repeat;
+  color: white;
+  margin: 0; 
+}
+
+
+.buttons {
+  display: inline-block;
+}
+
+.b{
+  display: block;
+  margin: 5px;
+  width: 30vw;
+}
+
+.container{
+  color: black;
+  background-color: rgb(211, 244, 255);
+  border-radius: 25px;
+  padding: 15px;
+}
+
+.home{
+  height: 30vw;
+}
+
+.test{
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.question{
+  padding: 10px;
+  background-color: white;
+  border-radius: 15px;
+}
 .centered {
-    padding-top: 200px;
-    text-align: center;
+  padding-top: 200px;
+  text-align: center;
 }
 
 .secret-text {
@@ -13,4 +59,91 @@ body {
   font-size: 2rem;
   color: #fff;
   background-color: #000;
+}
+
+.search{
+  margin: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.row{
+  justify-content: center;
+}
+
+.choose{
+  display: inline;
+}
+
+.idk{
+  display: inline;
+  justify-content: center;
+}
+.add{
+  display: inline;
+}
+.backhome{
+  display: inline;
+}
+
+.options{
+  list-style-type: circle;
+}
+
+.radio{
+  width:20px;
+  height:20px;
+}
+
+.form-control{
+  display:inline-block;
+}
+
+h2{
+  text-align: center;
+}
+
+.top{
+  border: 3px solid black;
+  padding: 10px;
+  margin: 10px;
+}
+
+.row {
+  margin: 5px;
+}
+
+.top {
+  border: 3px solid black;
+  padding: 10px;
+}
+
+.coding-question {
+  border: 3px solid black;
+}
+
+textarea {
+  width: 50vw;
+  height: 35vw;
+  background-color: black;
+  color: white;
+}
+
+select {
+  border: none;
+}
+
+.wrap-no{
+  margin: 0;
+  background-color: rgb(211, 244, 255);
+}
+
+.mul{
+  background-color: white;
+}
+
+.coding-submit{
+  width: 50vw;
+  display: flex;
+  justify-content: end;
 }
