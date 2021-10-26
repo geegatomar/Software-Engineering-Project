@@ -420,7 +420,10 @@ app.post("/apply_for_job/:jobId", async function (req, res) {
 
     );
     console.log(updatedApplicant);
-    res.send("Your application has been successfully submitted. Thank you for applying!");
+    // res.send("Your application has been successfully submitted. Thank you for applying!");
+    res.render("random_base", {
+        text: "Your application has been successfully submitted. Thank you for applying!"
+    });
 
 });
 
@@ -492,7 +495,10 @@ app.post("/give_test/:jobId", async function (req, res) {
         }
     });
     console.log(updatescore);
-    res.send("You have sucessfully completed and submitted your test!!");
+    // res.send("You have sucessfully completed and submitted your test!!");
+    res.render("random_base", {
+        text: "You have sucessfully completed and submitted your test!!"
+    });
 });
 
 app.post("/view_codingtest/:jobId", function (req, res) {
@@ -503,6 +509,13 @@ app.post("/view_codingtest/:jobId", function (req, res) {
         if (err) {
             console.log(err);
         }
+        console.log("++++++++++++++++++++++", foundtest);
+        console.log("================ ", foundtest.problem.problemname);
+        // if (foundtest.problem.problemname == "Needstobeset") {
+        //     res.render("random_base", {
+        //         text: "This test has not been created yet."
+        //     });
+        // }
         res.render("users/seeker/coding", {
             jobId: jobId,
             username: req.session.userEmail,
@@ -573,8 +586,10 @@ app.post("/getlanguage/:jobId", async function (req, res) {
         }
     });
 
-    res.send("Thank you for taking the test your test has been successfully submitted");
-
+    // res.send("Thank you for taking the test your test has been successfully submitted");
+    res.render("random_base", {
+        text: "Thank you for taking the test your test has been successfully submitted"
+    });
 });
 
 
@@ -893,7 +908,10 @@ app.post("/select_applicant/:jobId", async function (req, res) {
             "applicants.$.status": "Selected"
         }
     });
-    res.send("Selection mail has been sent");
+    // res.send("Selection mail has been sent");
+    res.render("random_base", {
+        text: "Selection mail has been sent"
+    });
 });
 
 app.post("/proceed_next_stage/:jobId", function (req, res) {
@@ -908,6 +926,7 @@ app.post("/proceed_next_stage/:jobId", function (req, res) {
         applicant: req.body.applicant
     });
 });
+
 
 app.post("/send_interview_invites", function (req, res) {
     console.log(req.body);
@@ -929,7 +948,10 @@ app.post("/send_interview_invites", function (req, res) {
     // TODO: Make these mails more descriptive, and have more data by fetching from the dbs.
 
     sendEmail(interviewersEmail, "You have to take an interview on " + dateObj.toString(), "Interviewing Details", dateObj, org);
-    res.send("Mail has been sent");
+    // res.send("Mail has been sent");
+    res.render("random_base", {
+        text: "Mail has been sent"
+    });
 });
 
 app.get("/logout", function (req, res) {
