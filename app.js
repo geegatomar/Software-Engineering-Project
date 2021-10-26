@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 let sendEmail = require(__dirname + "/email-send.js");
+let sendEmailWithoutCalendar = require(__dirname + "/email-send-no-cal.js");
 var axios = require('axios');
 const app = express();
 
@@ -159,8 +160,11 @@ app.post("/register", function (req, res) {
             console.log(err);
         } else {
             if (foundResult) {
-                res.send("User with this username already exists");
+                // res.send("User with this username already exists");
                 // TODO: Send user to register page after giving this alert.
+                res.render("random_base", {
+                    text: "User with this username already exists"
+                });
             } else {
                 // Else create a new user and add it
                 const newUser = new User({
@@ -248,11 +252,17 @@ app.post("/login", function (req, res) {
                     res.redirect("/home");
                 } else {
                     // TODO: Make this also a new webpage, or just handle with frontend and rerender this page
-                    res.send("Wrong username or password. Try again");
+                    // res.send("Wrong username or password. Try again");
+                    res.render("random_base", {
+                        text: "Wrong username or password. Try again"
+                    });
                 }
             } else {
                 // TODO: Make this also a new webpage, or just handle with frontend and rerender this page
-                res.send("User not found");
+                // res.send("User not found");
+                res.render("random_base", {
+                    text: "User not found. Please Register first."
+                });
             }
         }
     })
@@ -377,53 +387,82 @@ app.post("/apply_for_job/:jobId", async function (req, res) {
     console.log(req.params.jobId);
     console.log(req.body);
     const applicant = req.session.userEmail;
-    // First find the user and update the jobs they applied to
-    const foundSeeker = await Seeker.findOneAndUpdate({
+
+
+    // Find the user and check if they have already applied to this job or not.
+    const foundSeeker1 = await Seeker.findOne({
         email: applicant
-    }, {
-        $push: {
-            jobsAppliedTo: {
-                "organization": req.body.organization,
-                "id": req.params.jobId,
-                "status": "Applied"
-            }
-        }
+    }).catch((err) => {
+        console.error(err);
     });
-    console.log(foundSeeker);
+    let alreadyApplied = 0;
+    console.log("=======================================================\n\n");
+    console.log(foundSeeker1);
+    foundSeeker1.jobsAppliedTo.forEach(function (job) {
+        console.log("++++++++++++++++ ", job.id, req.params.jobId);
+        if (job.id == req.params.jobId) {
+            console.log("Already applied");
+            // Setting the flag to 1
+            alreadyApplied = 1;
+            // res.send("Already applied");
 
-    console.log("Pushing on ", applicant);
-    const updatedApplicant = await Applicant.findOneAndUpdate({
-        jobId: req.params.jobId
-    }, {
-        $push: {
-            applicants: {
-                "email": applicant,
-                "status": "Applied"
-            }
         }
     });
 
-    const apps = {
-        "appemail": req.session.userEmail,
-        "score": null,
-        "language": null,
-        "input": null,
-        "codingscore": null
-    }
-    const updatedtest = await Tests.findOneAndUpdate({
+    if (alreadyApplied) {
+        res.render("random_base", {
+            text: "You have already applied to this job."
+        });
+    } else {
+        // Find the user and update the jobs they applied to
+
+        const foundSeeker = await Seeker.findOneAndUpdate({
+            email: applicant
+        }, {
+            $push: {
+                jobsAppliedTo: {
+                    "organization": req.body.organization,
+                    "id": req.params.jobId,
+                    "status": "Applied"
+                }
+            }
+        });
+        console.log(foundSeeker);
+
+        console.log("Pushing on ", applicant);
+        const updatedApplicant = await Applicant.findOneAndUpdate({
             jobId: req.params.jobId
         }, {
             $push: {
-                applicants: apps
+                applicants: {
+                    "email": applicant,
+                    "status": "Applied"
+                }
             }
-        }
+        });
 
-    );
-    console.log(updatedApplicant);
-    // res.send("Your application has been successfully submitted. Thank you for applying!");
-    res.render("random_base", {
-        text: "Your application has been successfully submitted. Thank you for applying!"
-    });
+        const apps = {
+            "appemail": req.session.userEmail,
+            "score": null,
+            "language": null,
+            "input": null,
+            "codingscore": null
+        }
+        const updatedtest = await Tests.findOneAndUpdate({
+                jobId: req.params.jobId
+            }, {
+                $push: {
+                    applicants: apps
+                }
+            }
+
+        );
+        console.log(updatedApplicant);
+        // res.send("Your application has been successfully submitted. Thank you for applying!");
+        res.render("random_base", {
+            text: "Your application has been successfully submitted. Thank you for applying!"
+        });
+    }
 
 });
 
@@ -879,10 +918,19 @@ app.post("/rejection_feedback/:jobId", function (req, res) {
     console.log(req.body.applicant);
     console.log(req.params.jobId);
 
-    // TODO: Send rejection mail
+    var org = req.session.userOrganization;
+    console.log("----------------------- ", req.body);
+    const applicantsEmail = req.body.applicant;
+    const feedback = req.body.feedback;
 
+    const text = `Dear Candidate,\nWe are very sorry to inform you about the rejection of your application with the organization ${org}. \n\nThe feedback as received from your recruiter is as follows: \n${feedback} \n\n\nContinue surfing jobs on R-Suite, we are sure you will definitely land your dream job!`;
+    const subject = `Update on your job application to ${org}`;
+    sendEmailWithoutCalendar(applicantsEmail, text, subject);
 
-    res.send("Rejection mail has been sent");
+    // res.send("Rejection mail has been sent");
+    res.render("random_base", {
+        text: "Rejection mail has been sent"
+    });
 });
 
 app.post("/select_applicant/:jobId", async function (req, res) {
@@ -908,6 +956,10 @@ app.post("/select_applicant/:jobId", async function (req, res) {
             "applicants.$.status": "Selected"
         }
     });
+    const text = `Dear Candidate,\nCongratulations on your selection with the organization ${org}. The HRs from ${org} will be reaching out to you for further steps. Thanks for choosing R-Suite!`;
+    const subject = "Congratulations! You have been selected!";
+    sendEmailWithoutCalendar(applicantsEmail, text, subject);
+
     // res.send("Selection mail has been sent");
     res.render("random_base", {
         text: "Selection mail has been sent"
