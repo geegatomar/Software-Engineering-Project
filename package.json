@@ -4,7 +4,8 @@
   "description": "The database is called userDB.",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
   },
   "repository": {
     "type": "git",
@@ -25,7 +26,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.2",
     "ical-generator": "^3.0.1",
-    "mongoose": "^6.0.11",
+    "mongoose": "^6.0.12",
     "nodemailer": "^6.7.0",
     "nodemon": "^2.0.14"
   }
