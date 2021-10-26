@@ -151,7 +151,6 @@ app.get("/login", function (req, res) {
 
 app.post("/register", function (req, res) {
     console.log(req.body);
-
     // If a user with this email already exists
     User.exists({
         email: req.body.username
