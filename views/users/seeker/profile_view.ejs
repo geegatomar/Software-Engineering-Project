@@ -1,20 +1,20 @@
 <%- include('../../partials/header') %>
-
+<div class="wrap">
 <div class="jumbotron text-center">
   <div class="container">
     <i class="fas fa-key fa-6x"></i>
     <h1 class="display-3">Profile Page</h1>
     <hr>
 
-    <p> Name: <%= name %> </p>
-    <p> Email: <%= email %> </p>
-    <p> Experience: <%= experience %> </p>
-    <p> Description: <%= description %> </p>
+    <p> <b>Name:</b> <%= name %> </p>
+    <p> <b>Email:</b> <%= email %> </p>
+    <p> <b>Experience:</b> <%= experience %> </p>
+    <p> <b>Description:</b> <%= description %> </p>
     
     
     <a class="btn btn-light btn-lg" href="/home" role="button">Back To Home</a>
     <a class="btn btn-dark btn-lg" href="/profile_edit" role="button">Update Profile</a>
   </div>
 </div>
-
+</div>
 <%- include('../../partials/footer') %>

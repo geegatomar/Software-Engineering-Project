@@ -1,9 +1,6 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
 
-<head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <style>
+<%- include('../../partials/header') %>
+    <!-- <style>
         .row {
             margin: 5px;
         }
@@ -27,11 +24,9 @@
         select {
             border: none;
         }
-    </style>
-</head>
-
-<body>
-    <div class="container">
+    </style> -->
+    <div class="wrap-no">
+    <div class="container test mul">
         <div class="row top">
             <div class="col">
                 <p>
@@ -51,7 +46,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-4 question">
+            <div class="col coding-question">
                 <h5>
                     <%=probname%>
                 </h5>
@@ -60,15 +55,18 @@
                 </p>
             </div>
             <form>
-                <div class="col input">
+                <div class="col-8 input">
                     <label for="inputs">Input:</label><br>
                     <textarea name="inputs" form="input"></textarea>
                     <br>
-                    <input type="submit" value="Submit" form="input">
+                    <div class="coding-submit">
+                        <input class="btn btn-success" type="submit" value="Submit" form="input">
+                    </div>
                 </div>
             </form>
 
         </div>
+    </div>
     </div>
 </body>
 

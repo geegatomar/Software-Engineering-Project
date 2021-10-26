@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<style>
+.row{
+    margin: 5px;
+}
+.top{
+    border: 3px solid black;
+    padding: 10px;
+}
+.question{
+    border:3px solid black;
+}
+
+textarea{
+    width: 51vw;
+    height: 20vw;
+    background-color: black;
+    color: white;
+}
+
+select{
+    border: none;
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="row top">
+        <div class="col">Username</div>
+        <div class="col-3">
+            <form action="" id="input">
+                <label for="languages">Choose a language:</label>
+                <select name="languages" id="languages">
+                  <option name="option" value="C">C</option>
+                  <option name="option" value="Cpp">Cpp</option>
+                  <option name="option" value="Java">Java</option>
+                  <option name="option" value="Python">Python</option>
+                </select>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4 question">
+            <h5>Question</h5>
+            <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos voluptatum consequatur 
+                minima eos libero ipsa doloremque et, doloribus earum accusamus. Consequuntur nobis 
+                tempora maxime quisquam, quo nesciunt tempore optio officia?
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos voluptatum consequatur 
+                minima eos libero ipsa doloremque et, doloribus earum accusamus. Consequuntur nobis 
+                tempora maxime quisquam, quo nesciunt tempore optio officia?
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos voluptatum consequatur 
+                minima eos libero ipsa doloremque et, doloribus earum accusamus. Consequuntur nobis 
+                tempora maxime quisquam, quo nesciunt tempore optio officia?
+            
+            </p>
+        </div>
+        <div class="col input">
+                <label for="inputs">Input:</label><br>
+                <textarea name="inputs" form="input"></textarea>
+                <br>
+                <input type="submit" value="Submit" form="input">
+        </div>
+    </div>
+</div>
+</body>
+</html>

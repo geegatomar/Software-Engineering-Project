@@ -1,37 +1,50 @@
 <%- include('../../partials/header') %>
-
-    <div class="jumbotron text-center">
-        <div class="container">
-            <i class="fas fa-key fa-6x"></i>
-            <h1 class="display-3">All Job Opportunities</h1>
-            <form class="form-inline" action="/search_for_seeker" method="POST">
-                <input class="form-control mr-sm-2" name="search" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
-            <%allJobsOfCompany.forEach((jobs) => {%>
-                <%jobs.jobs.forEach((job) => {%>
-                    <hr>
-                    <div class="form-group">
-                        <p>Organization</p>
-                        <p>
-                            <%= jobs.organization %>
-                        </p>
-                        <p>Title</p>
-                        <p>
-                            <%= job.title %>
-                        </p>
-
-                        <form method="POST" action="/view_job/<%= job.id%>">
-                            <input type="hidden" name="email" value="<%= jobs.email%>">
-                            <button type="submit" class="btn btn-info" name="organization" value="<%= jobs.organization %>">View Job</button>
-                        </form>
+<div class="wrap">
+<div class="jumbotron text-center">
+  <div class="container">
+    <i class="fas fa-key fa-6x"></i>
+    <h1 class="display-3">All Job Opportunities</h1>
+    <form class="search form-inline" action="/search_for_recruiter" method="POST">
+        <input class="form-control mr-sm-2" name="search" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+    <div class="list">
+    <%allJobsOfCompany.forEach((jobs) => {%>
+        <%jobs.jobs.forEach((job) => {%>
+            <hr>
+            <!-- <div class="form-group">
+                <b>Organization</b>
+                <p> <%= jobs.organization %> </p>
+                <b>Title</b>
+                <p> <%= job.title %> </p>
+                
+                <form method="POST" action="/view_job/<%= job.id%>">
+                    <input type="hidden" name="email" value="<%= jobs.email%>">
+                    <button type="submit" class="btn btn-info" name="organization" value="<%= jobs.organization %>">View Job</button>
+                </form>
+            </div> -->
+            <div class="row">
+                <div class="col-sm-6">
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title"> <%= jobs.organization %> </h5>
+                      <hr>
+                      <p class="card-text"> <b>Job Profile: </b><%= job.title %> </p>
+                      <form method="POST" action="/view_job/<%= job.id%>">
+                        <input type="hidden" name="email" value="<%= jobs.email%>">
+                        <button type="submit" class="btn btn-info" name="organization" value="<%= jobs.organization %>">View Job</button>
+                      </form>
                     </div>
-                    <br>
-                    <%})%>
-                        <%});%>
-                            <hr>
-                            <a class="btn btn-light btn-lg" href="/home" role="button">Back To Home</a>
-        </div>
+                  </div>
+                </div>
+            </div>
+            <br>
+        <%})%>
+    <%});%>
     </div>
-
-    <%- include('../../partials/footer') %>
+    <hr>
+    <a class="btn btn-dark btn-lg" href="/home" role="button">Back To Home</a>
+  </div>
+</div>
+</div>
+<%- include('../../partials/footer') %>
