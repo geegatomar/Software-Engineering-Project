@@ -8,6 +8,13 @@ let sendEmail = require(__dirname + "/email-send.js");
 let sendEmailWithoutCalendar = require(__dirname + "/email-send-no-cal.js");
 var axios = require('axios');
 const app = express();
+// Require log4js
+const log4js = require("log4js");
+
+// Create the logger
+const logger = log4js.getLogger();
+logger.level = "info";
+
 
 app.use(express.static("public"));
 app.set("view engine", "ejs");
@@ -138,18 +145,22 @@ const testSchema = {
 const Tests = new mongoose.model("Tests", testSchema)
 
 app.get("/", function (req, res) {
+    logger.info("On route /");
     res.render("home")
 });
 
 app.get("/register", function (req, res) {
+    logger.info("On route /register");
     res.render("register")
 });
 
 app.get("/login", function (req, res) {
+    logger.info("On route /login");
     res.render("login")
 });
 
 app.post("/register", function (req, res) {
+    logger.info("On post route /register");
     console.log(req.body);
     // If a user with this email already exists
     User.exists({
@@ -179,6 +190,7 @@ app.post("/register", function (req, res) {
                 req.session.userOrganization = req.body.organization;
                 req.session.save();
 
+                logger.info("Saving session ", req.session.userEmail, req.session.userType);
                 console.log("Saving session ", req.session.userEmail, req.session.userType);
 
                 // Upon registering a seeker, save it in the Seeker table
@@ -194,8 +206,10 @@ app.post("/register", function (req, res) {
                     });
                     newSeeker.save(function (err) {
                         if (err) {
+                            logger.error(err);
                             console.log(err);
                         } else {
+                            logger.info("Saved to seeker table")
                             console.log("Saved to seeker table");
                         }
                     })
@@ -209,14 +223,17 @@ app.post("/register", function (req, res) {
                     });
                     newJobs.save(function (err) {
                         if (err) {
+                            logger.error(err);
                             console.log(err);
                         } else {
+                            logger.info("Saved recruiter to jobs table");
                             console.log("Saved recruiter to jobs table");
                         }
                     })
                 }
                 newUser.save(function (err) {
                     if (err) {
+                        logger.error(err);
                         console.log("UNABLE TO REGISTER USER")
                         console.log(err);
                     } else {
@@ -229,6 +246,7 @@ app.post("/register", function (req, res) {
 });
 
 app.post("/login", function (req, res) {
+    logger.info("On post route /login");
     const username = req.body.username;
     const password = req.body.password;
 
@@ -236,6 +254,7 @@ app.post("/login", function (req, res) {
         email: username
     }, function (err, foundUser) {
         if (err) {
+            logger.error(err);
             console.log("ERROR WHILE LOGIN")
             console.log(err);
         } else {
@@ -247,7 +266,7 @@ app.post("/login", function (req, res) {
                     req.session.userOrganization = foundUser.organization;
                     req.session.save();
                     console.log("Saving session ", req.session.userEmail, req.session.userType);
-
+                    logger.info("Saving session ", req.session.userEmail, req.session.userType);
                     res.redirect("/home");
                 } else {
                     // TODO: Make this also a new webpage, or just handle with frontend and rerender this page
@@ -269,6 +288,7 @@ app.post("/login", function (req, res) {
 
 // This is the home page of either recruiter or seeker, depending on whose session has been logged in
 app.get("/home", function (req, res) {
+    logger.info("On route /home");
     console.log(req.session);
     if (!('userEmail' in req.session)) {
         // Then the user is logged out, so redirect them to sign in page
@@ -290,6 +310,7 @@ app.get("/home", function (req, res) {
 // To view my profile
 app.get("/profile", function (req, res) {
     // We first fetch the required information from the DB
+    logger.info("On route /profile");
     const userEmail = req.session.userEmail;
     Seeker.findOne({
         email: userEmail
@@ -311,6 +332,7 @@ app.get("/profile", function (req, res) {
 
 // To edit my profile
 app.get("/profile_edit", function (req, res) {
+    logger.info("On route /profile_edit");
     // We first fetch the required information from the DB
     const userEmail = req.session.userEmail;
     Seeker.findOne({
@@ -332,6 +354,7 @@ app.get("/profile_edit", function (req, res) {
 
 // The route for after you submit the form for editting profile
 app.post("/profile_edit", async function (req, res) {
+    logger.info("On post route /profile_edit");
     console.log(req.body);
     const userEmail = req.session.userEmail;
 
@@ -347,6 +370,7 @@ app.post("/profile_edit", async function (req, res) {
 
 // For seeker
 app.get("/view_all_jobs", async function (req, res) {
+    logger.info("On route /view_all_jobs");
     allJobsOfCompany = await Jobs.find();
     console.log(allJobsOfCompany);
     res.render("users/seeker/view_all_jobs", {
@@ -355,6 +379,7 @@ app.get("/view_all_jobs", async function (req, res) {
 });
 
 app.post("/view_job/:jobId", function (req, res) {
+    logger.info("On post route /view_job/:jobId");
     const jobId = req.params.jobId;
     console.log(req.params.jobId);
     console.log(req.body.organization);
@@ -383,6 +408,7 @@ app.post("/view_job/:jobId", function (req, res) {
 });
 
 app.post("/apply_for_job/:jobId", async function (req, res) {
+    logger.info("On post route /apply_for_job/:jobId");
     console.log(req.params.jobId);
     console.log(req.body);
     const applicant = req.session.userEmail;
@@ -466,6 +492,7 @@ app.post("/apply_for_job/:jobId", async function (req, res) {
 });
 
 app.get("/view_my_applied_jobs", async function (req, res) {
+    logger.info("On route /view_my_applied_jobs");
     const email = req.session.userEmail;
     const foundSeeker = await Seeker.findOne({
         email: email
@@ -477,6 +504,7 @@ app.get("/view_my_applied_jobs", async function (req, res) {
 });
 
 app.post("/view_test/:jobId", function (req, res) {
+    logger.info("On post route /view_test/:jobId");
     const jobId = req.params.jobId;
     Tests.findOne({
         jobId: jobId
@@ -494,7 +522,7 @@ app.post("/view_test/:jobId", function (req, res) {
 });
 
 app.post("/give_test/:jobId", async function (req, res) {
-
+    logger.info("On post route /give_test/:jobId");
     count = 0;
     const foundtest = await Tests.findOne({
         jobId: req.params.jobId
@@ -540,6 +568,7 @@ app.post("/give_test/:jobId", async function (req, res) {
 });
 
 app.post("/view_codingtest/:jobId", function (req, res) {
+    logger.info("On post route /view_codingtest/:jobId");
     const jobId = req.params.jobId;
     Tests.findOne({
         jobId: jobId
@@ -564,6 +593,7 @@ app.post("/view_codingtest/:jobId", function (req, res) {
 });
 
 app.post("/getlanguage/:jobId", async function (req, res) {
+    logger.info("On post route /getlanguage/:jobId");
     const jobId = req.params.jobId;
     console.log(req.body);
 
@@ -634,10 +664,12 @@ app.post("/getlanguage/:jobId", async function (req, res) {
 
 // For recruiter
 app.get("/create_job", function (req, res) {
+    logger.info("On route /create_job");
     res.render("users/recruiter/create_job");
 });
 
 app.post("/create_job", async function (req, res) {
+    logger.info("On post route /create_job");
     // Create job and add it to the DB
     console.log(req.body);
 
@@ -692,6 +724,7 @@ app.post("/create_job", async function (req, res) {
 });
 
 app.get("/view_my_postings", function (req, res) {
+    logger.info("On route /view_my_postings");
     Jobs.findOne({
         email: req.session.userEmail
     }, function (err, updatedJobs) {
@@ -707,6 +740,7 @@ app.get("/view_my_postings", function (req, res) {
 });
 
 app.post("/search_for_recruiter", function (req, res) {
+    logger.info("On post route /search_for_recruiter");
     console.log(req.body);
     Jobs.findOne({
         email: req.session.userEmail
@@ -725,6 +759,7 @@ app.post("/search_for_recruiter", function (req, res) {
 
 
 app.post("/search_for_seeker", async function (req, res) {
+    logger.info("On post route /search_for_seeker");
     console.log(req.body);
     foundJobs = await Jobs.find();
     console.log(foundJobs);
@@ -752,6 +787,7 @@ app.post("/search_for_seeker", async function (req, res) {
 });
 
 app.post("/view_applicants/:jobId", async function (req, res) {
+    logger.info("On post route /view_applicants/:jobId");
     console.log(req.params.jobId);
     const jobId = req.params.jobId;
 
@@ -771,6 +807,7 @@ app.post("/view_applicants/:jobId", async function (req, res) {
 });
 
 app.post("/test_create/:jobId", function (req, res) {
+    logger.info("On post route /test_create/:jobId");
     const jobId = req.params.jobId;
     Tests.findOne({
         jobId: jobId
@@ -786,7 +823,9 @@ app.post("/test_create/:jobId", function (req, res) {
         }
     })
 });
+
 app.post("/codingtest_create/:jobId", function (req, res) {
+    logger.info("On post route /codingtest_create/:jobId");
     const jobId = req.params.jobId;
     res.render("users/recruiter/create_codingtest", {
         jobId: jobId
@@ -794,6 +833,7 @@ app.post("/codingtest_create/:jobId", function (req, res) {
 });
 
 app.post("/create_codingtest/:jobId", async function (req, res) {
+    logger.info("On post route /create_codingtest/:jobId");
     const jobId = req.params.jobId;
     console.log("hey2");
     const prob = {
@@ -817,6 +857,7 @@ app.post("/create_codingtest/:jobId", async function (req, res) {
 });
 
 app.post("/add_question/:jobId", function (req, res) {
+    logger.info("On post route /add_question/:jobId");
     const jobId = req.params.jobId;
     console.log(jobId);
 
@@ -827,6 +868,7 @@ app.post("/add_question/:jobId", function (req, res) {
 });
 
 app.post("/question_add/:jobId", function (req, res) {
+    logger.info("On post route /question_add/:jobId");
     console.log(req.body);
     const jobId = req.params.jobId;
     const ques = {
@@ -859,6 +901,7 @@ app.post("/question_add/:jobId", function (req, res) {
 });
 
 app.post("/view_score/:jobId/:mailid", function (req, res) {
+    logger.info("On post route /view_score/:jobId/:mailid");
     console.log("hey");
     const jobId = req.params.jobId;
     const mailid = req.params.mailid;
@@ -887,6 +930,7 @@ app.post("/view_score/:jobId/:mailid", function (req, res) {
 
 
 app.post("/reject_applicant/:jobId", async function (req, res) {
+    logger.info("On post route /reject_applicant/:jobId");
     console.log(req.body);
     console.log(req.params.jobId);
     const jobId = req.params.jobId;
@@ -914,6 +958,7 @@ app.post("/reject_applicant/:jobId", async function (req, res) {
 });
 
 app.post("/rejection_feedback/:jobId", function (req, res) {
+    logger.info("On post route /rejection_feedback/:jobId");
     console.log(req.body.applicant);
     console.log(req.params.jobId);
 
@@ -933,6 +978,7 @@ app.post("/rejection_feedback/:jobId", function (req, res) {
 });
 
 app.post("/select_applicant/:jobId", async function (req, res) {
+    logger.info("On post route /select_applicant/:jobId");
     const jobId = req.params.jobId;
     console.log(req.body);
     console.log(req.params.jobId);
@@ -966,6 +1012,7 @@ app.post("/select_applicant/:jobId", async function (req, res) {
 });
 
 app.post("/proceed_next_stage/:jobId", function (req, res) {
+    logger.info("On post route /proceed_next_stage/:jobId");
     console.log(req.body);
     console.log(req.params.jobId);
 
@@ -980,6 +1027,7 @@ app.post("/proceed_next_stage/:jobId", function (req, res) {
 
 
 app.post("/send_interview_invites", function (req, res) {
+    logger.info("On post route /send_interview_invites");
     console.log(req.body);
     console.log(req.body.applicant);
     const interviewersEmail = req.body.email;
@@ -1006,6 +1054,7 @@ app.post("/send_interview_invites", function (req, res) {
 });
 
 app.get("/logout", function (req, res) {
+    logger.info("On route /logout");
     // Destroying the session when we logout
     req.session.destroy();
     res.redirect("/");
