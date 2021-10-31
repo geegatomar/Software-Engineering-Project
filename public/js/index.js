@@ -12,7 +12,7 @@ try {
     $('.no-browser-support').show();
 }
 
-$('#start-record-btn').on('click', function(e) {
+$('#start-record-btn').on('click', function (e) {
     recognition.start();
 });
 
@@ -26,14 +26,14 @@ recognition.onresult = (event) => {
 
 function listendom(no) {
     console.log(no)
-        //console.log(document.getElementById(no))
+    //console.log(document.getElementById(no))
     document.getElementById("MSG").value = no.innerHTML;
     insertMessage();
 }
 
-$(window).load(function() {
+$(window).load(function () {
     $messages.mCustomScrollbar();
-    setTimeout(function() {
+    setTimeout(function () {
         serverMessage("hello i am customer support bot type hi and i will show you quick buttions");
     }, 100);
 
@@ -78,7 +78,7 @@ function serverMessage(response2) {
     updateScrollbar();
 
 
-    setTimeout(function() {
+    setTimeout(function () {
         $('.message.loading').remove();
         $('<div class="message new"><figure class="avatar"><img src="css/bot.png" /></figure>' + response2 + '</div>').appendTo($('.mCSB_container')).addClass('new');
         updateScrollbar();
@@ -89,7 +89,7 @@ function serverMessage(response2) {
 
 function fetchmsg() {
 
-    var url = 'http://localhost:3000/send-msg';
+    var url = 'https://evil-werewolf-75549.herokuapp.com/send-msg';
 
     const data = new URLSearchParams();
     for (const pair of new FormData(document.getElementById("mymsg"))) {

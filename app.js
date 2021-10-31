@@ -248,6 +248,7 @@ async function runSample(msg, projectId = 'rsuite-bot-ayug') {
 
 
 app.get("/chatbot", function (req, res) {
+    logger.info("On route /chatbot")
     //res.sendFile(path.join(__dirname + '/views/botui/index.html'));
     res.render('index')
 });
