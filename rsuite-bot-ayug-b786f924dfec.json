@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "rsuite-bot-ayug",
+  "private_key_id": "b786f924dfeccd9badd5b3b8146f1bd75b5d2834",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDYw/qzeP41wFpa\n9pMBrdtEFsQDDkl8YaACvAPrpggfiu4BH9dN3amdYGmTtr2z0L5cKoOlqmIGZu+g\nEWVRvVILSwoHxMZVrGTICxffv6SafVml63TKSk4iUOMVoGyzssmypy79FP8QYa34\nh7DWJpd7kgYIy6/b7Wtmzluh2jbMjaB6WHCyKb1+3KoCXpWxWhsZGDPpzMMgFPug\neqYVl/1z/2/LAjhjrw03I66px08p4uPA71Gew/6oPkcSUqWYX4plDpGtEhdctAt/\n2bLiFoCq1aKSjSR4eDBulQHCuwmeaqXjMSPrpnolR62+6KAHa90bpmE27zCG2m45\nwMt3B3UBAgMBAAECggEAC/cJZBW2Jn5nHmVE6Q9RLpl5GVgVC1YSMIRzTPMduKwB\nBjPdPRGStrqnKT2pi/7mOw0ntiHJBmRxLqs3JgNmv3PVamdcsUbySy59k16vNc3c\ngHGWQUJHvNItLrjrtyGTy5Y53ENn7t4Nbc4Dn1aC/xGo3pxrqR6aUpLqcO0sIC9J\nG+kRnEKE4MHb07+xU4PJdjDRgUVT3TKsn1H0O8E1etoM9GLrTI/zP4xe+CyOETDF\n9q7PRFa4zRIzg1Mjq8v1MBpYX/ljdKKfFLuZRyv1IKGSeNOmCwWDzgHzwAewtQ/t\nb3+nEcQfDPzghetyu0lFkY/lHi96CIgCjj9y/N8FBwKBgQDyDdcl3JP6uZjJ4rnV\n6gLr6SLlrADRhIK0CWfnRRcupePT31ziwB8brY6UDEVmi8wRq6QxwdLAUbrdDdZe\npBsSG3FuiDwvVr7u09Af5WJ1OfQdsf3BrKLGTDxeC2Syuu3Q4wwJ6aPsn1iznWBX\nODPzPRFIOzcY3EpDLxifveT4zwKBgQDlQSXJ+sOSoR8tQIyBj0j2OK2azhpF/uPs\nFrJAKXYkCi/ctlTuEpQGqVkyx29r34ZNpUkBR/p3/g3mP1FJVFMeqB72CuqKOER2\nRgOO5hynFj/hMzUhtr2vPJUpm9k01O95kx85HaGLSUqMhvGTPWcOAgEBMyiPr8v+\n3V2Z2XmJLwKBgQC92vVCET1Qj3qz/03b52zbNUXV94+8xr7uD+Kbl6mTQTLt4Giu\nwhqkTwFiRi25PTWXNpXXITv49SIoeM4H9Zf2H+hc1ia+yr9//EtmeTk80XQURqPO\n4WXbO7it2ynktpIKIcwzijq1QlcEqxAB2WeGBgQkL64Lpd3pzGr4AK40KQKBgCgX\ndYlV/j+1R6N9R1Uc/rB4hvuskXGuOqO98FxCI/P3iBk8FawwuYxUr1GvCPA/fdg0\nUIkV0lqLplieuBNv2L1iv09d51hWsLpSUir6WQZrYK58aw1DTPbJTHijVZ/koSCM\ntwghA3A9V/ktXC/YrB4KAaz5Cl3ea3ldsxHFs3hnAoGADMdBZeH4Zn5yN3ixznLI\nIIPiLMQOAu87Waqt5N5IU4z1wE61jJUWfoMjvnyoJVZKTOGMXVN82wn3E5Pzksno\nQqEg7vXrOP5yKdOUWm3wce9B2gkp1Nslbdh+9+hRufKnKL65U6Gvx1ntmSB2iRTl\nPV3Dp+vuLuNNf1QoE/8QpLM=\n-----END PRIVATE KEY-----\n",
+  "client_email": "riya-shah@rsuite-bot-ayug.iam.gserviceaccount.com",
+  "client_id": "117625511891804229663",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/riya-shah%40rsuite-bot-ayug.iam.gserviceaccount.com"
+}
