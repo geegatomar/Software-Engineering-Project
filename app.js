@@ -192,6 +192,7 @@ app.use(function (req, res, next) {
 });
 
 app.post('/send-msg', (req, res) => {
+    logger.info("On route /send-msg")
     runSample(req.body.MSG).then(data => {
         res.send({
             Reply: data
