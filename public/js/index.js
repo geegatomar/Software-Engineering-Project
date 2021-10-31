@@ -89,7 +89,7 @@ function serverMessage(response2) {
 
 function fetchmsg() {
 
-    var url = 'https://evil-werewolf-75549.herokuapp.com/send-msg';
+    var url = '/send-msg';
 
     const data = new URLSearchParams();
     for (const pair of new FormData(document.getElementById("mymsg"))) {
