@@ -16,10 +16,15 @@ const logger = log4js.getLogger();
 logger.level = "info";
 
 
+const dialogflow = require('@google-cloud/dialogflow');
+const uuid = require('uuid');
+const sessionId = uuid.v4();
+const port = 3000;
+const path = require("path");
 app.use(express.static("public"));
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({
-    extended: true
+    extended: false
 }));
 
 app.use(cookieParser());
@@ -119,6 +124,8 @@ const testSchema = {
     jobId: String,
     email: String,
     organization: String,
+    statustest: String,
+    statuscodingtest: String,
     questions: {
         "type": "array",
         "items": {
@@ -160,7 +167,94 @@ app.get("/login", function (req, res) {
 });
 
 app.post("/register", function (req, res) {
-    logger.info("On post route /register");
+    logger.info("On post route /register")
+});
+app.use(function (req, res, next) {
+
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+
+    // Pass to next layer of middleware
+    next();
+});
+
+app.post('/send-msg', (req, res) => {
+    runSample(req.body.MSG).then(data => {
+        res.send({
+            Reply: data
+        })
+    })
+})
+
+
+/**
+ * Send a query to the dialogflow agent, and return the query result.
+ * @param {string} projectId The project to be used
+ */
+async function runSample(msg, projectId = 'rsuite-bot-ayug') {
+    // A unique identifier for the given session
+
+
+    // Create a new session
+    const sessionClient = new dialogflow.SessionsClient({
+        keyFilename: __dirname + "rsuite-bot-ayug-b786f924dfec.json"
+    });
+    const sessionPath = sessionClient.projectAgentSessionPath(
+        projectId,
+        sessionId
+    );
+
+    // The text query request.
+    const request = {
+        session: sessionPath,
+        queryInput: {
+            text: {
+                // The query to send to the dialogflow agent
+                text: msg,
+                // The language used by the client (en-US)
+                languageCode: 'en-US',
+            },
+        },
+    };
+
+    // Send request and log result
+    const responses = await sessionClient.detectIntent(request);
+    console.log('Detected intent');
+    const result = responses[0].queryResult;
+    console.log(`  Query: ${result.queryText}`);
+    console.log(`  Response: ${result.fulfillmentText}`);
+    if (result.intent) {
+        console.log(`  Intent: ${result.intent.displayName}`);
+    } else {
+        console.log('  No intent matched.');
+    }
+    return result.fulfillmentText;
+}
+
+
+
+
+app.get("/chatbot", function (req, res) {
+    //res.sendFile(path.join(__dirname + '/views/botui/index.html'));
+    res.render('index')
+});
+
+
+app.get("/", function (req, res) {
+    res.render("home")
+});
+
+app.get("/register", function (req, res) {
+    res.render("register")
+});
+
+app.get("/login", function (req, res) {
+    res.render("login")
+});
+
+app.post("/register", function (req, res) {
     console.log(req.body);
     // If a user with this email already exists
     User.exists({
@@ -331,8 +425,10 @@ app.get("/profile", function (req, res) {
 });
 
 // To edit my profile
+
 app.get("/profile_edit", function (req, res) {
     logger.info("On route /profile_edit");
+
     // We first fetch the required information from the DB
     const userEmail = req.session.userEmail;
     Seeker.findOne({
@@ -353,7 +449,9 @@ app.get("/profile_edit", function (req, res) {
 });
 
 // The route for after you submit the form for editting profile
+
 app.post("/profile_edit", async function (req, res) {
+
     logger.info("On post route /profile_edit");
     console.log(req.body);
     const userEmail = req.session.userEmail;
@@ -369,6 +467,7 @@ app.post("/profile_edit", async function (req, res) {
 });
 
 // For seeker
+
 app.get("/view_all_jobs", async function (req, res) {
     logger.info("On route /view_all_jobs");
     allJobsOfCompany = await Jobs.find();
@@ -377,6 +476,7 @@ app.get("/view_all_jobs", async function (req, res) {
         allJobsOfCompany: allJobsOfCompany
     });
 });
+
 
 app.post("/view_job/:jobId", function (req, res) {
     logger.info("On post route /view_job/:jobId");
@@ -407,8 +507,10 @@ app.post("/view_job/:jobId", function (req, res) {
     // res.send("Building");
 });
 
+
 app.post("/apply_for_job/:jobId", async function (req, res) {
     logger.info("On post route /apply_for_job/:jobId");
+
     console.log(req.params.jobId);
     console.log(req.body);
     const applicant = req.session.userEmail;
@@ -491,6 +593,7 @@ app.post("/apply_for_job/:jobId", async function (req, res) {
 
 });
 
+
 app.get("/view_my_applied_jobs", async function (req, res) {
     logger.info("On route /view_my_applied_jobs");
     const email = req.session.userEmail;
@@ -504,6 +607,7 @@ app.get("/view_my_applied_jobs", async function (req, res) {
 });
 
 app.post("/view_test/:jobId", function (req, res) {
+
     logger.info("On post route /view_test/:jobId");
     const jobId = req.params.jobId;
     Tests.findOne({
@@ -513,15 +617,23 @@ app.post("/view_test/:jobId", function (req, res) {
             console.log(err);
         }
         console.log(jobId);
-        res.render("users/seeker/view_test", {
-            jobId: jobId,
-            questions: foundtest.questions
-        });
-    });
+        if (foundtest.statustest == "taken") {
+            res.render("random_base", {
+                text: "You have aldready taken the test"
+            });
+        } else {
+            res.render("users/seeker/view_test", {
+                jobId: jobId,
+                questions: foundtest.questions
+            });
+        }
 
+    });
 });
 
+
 app.post("/give_test/:jobId", async function (req, res) {
+
     logger.info("On post route /give_test/:jobId");
     count = 0;
     const foundtest = await Tests.findOne({
@@ -560,6 +672,11 @@ app.post("/give_test/:jobId", async function (req, res) {
             "applicants.$.score": count
         }
     });
+    const up = await Tests.findOneAndUpdate({
+        jobId: jobId
+    }, {
+        statustest: "taken"
+    });
     console.log(updatescore);
     // res.send("You have sucessfully completed and submitted your test!!");
     res.render("random_base", {
@@ -567,7 +684,9 @@ app.post("/give_test/:jobId", async function (req, res) {
     });
 });
 
+
 app.post("/view_codingtest/:jobId", function (req, res) {
+
     logger.info("On post route /view_codingtest/:jobId");
     const jobId = req.params.jobId;
     Tests.findOne({
@@ -583,16 +702,24 @@ app.post("/view_codingtest/:jobId", function (req, res) {
         //         text: "This test has not been created yet."
         //     });
         // }
-        res.render("users/seeker/coding", {
-            jobId: jobId,
-            username: req.session.userEmail,
-            probname: foundtest.problem.problemname,
-            description: foundtest.problem.description
-        });
+        if (foundtest.statuscodingtest == "taken") {
+            res.render("random_base", {
+                text: "You have aldready taken the coding test"
+            });
+        } else {
+            res.render("users/seeker/coding", {
+                jobId: jobId,
+                username: req.session.userEmail,
+                probname: foundtest.problem.problemname,
+                description: foundtest.problem.description
+            });
+        }
     });
 });
 
+
 app.post("/getlanguage/:jobId", async function (req, res) {
+
     logger.info("On post route /getlanguage/:jobId");
     const jobId = req.params.jobId;
     console.log(req.body);
@@ -605,6 +732,11 @@ app.post("/getlanguage/:jobId", async function (req, res) {
     const language = req.body.languages;
     const inputcode = req.body.inputs;
     const inputcases = updatescore.problem.testcases;
+    const up = await Tests.findOneAndUpdate({
+        jobId: jobId
+    }, {
+        statuscodingtest: "taken"
+    });
 
     let data = {
         "code": inputcode,
@@ -663,12 +795,15 @@ app.post("/getlanguage/:jobId", async function (req, res) {
 
 
 // For recruiter
+
 app.get("/create_job", function (req, res) {
     logger.info("On route /create_job");
     res.render("users/recruiter/create_job");
 });
 
+
 app.post("/create_job", async function (req, res) {
+
     logger.info("On post route /create_job");
     // Create job and add it to the DB
     console.log(req.body);
@@ -701,6 +836,8 @@ app.post("/create_job", async function (req, res) {
         jobId: id,
         email: req.session.userEmail,
         organization: req.session.userOrganization,
+        statustest: "nottaken",
+        statuscodingtest: "taken",
         questions: [],
         applicants: [],
         problem: prob
@@ -723,8 +860,10 @@ app.post("/create_job", async function (req, res) {
     });
 });
 
+
 app.get("/view_my_postings", function (req, res) {
     logger.info("On route /view_my_postings");
+
     Jobs.findOne({
         email: req.session.userEmail
     }, function (err, updatedJobs) {
@@ -740,6 +879,7 @@ app.get("/view_my_postings", function (req, res) {
 });
 
 app.post("/search_for_recruiter", function (req, res) {
+
     logger.info("On post route /search_for_recruiter");
     console.log(req.body);
     Jobs.findOne({
@@ -756,6 +896,7 @@ app.post("/search_for_recruiter", function (req, res) {
         });
     });
 });
+
 
 
 app.post("/search_for_seeker", async function (req, res) {
@@ -786,7 +927,9 @@ app.post("/search_for_seeker", async function (req, res) {
 
 });
 
+
 app.post("/view_applicants/:jobId", async function (req, res) {
+
     logger.info("On post route /view_applicants/:jobId");
     console.log(req.params.jobId);
     const jobId = req.params.jobId;
@@ -806,7 +949,9 @@ app.post("/view_applicants/:jobId", async function (req, res) {
     })
 });
 
+
 app.post("/test_create/:jobId", function (req, res) {
+
     logger.info("On post route /test_create/:jobId");
     const jobId = req.params.jobId;
     Tests.findOne({
@@ -825,12 +970,14 @@ app.post("/test_create/:jobId", function (req, res) {
 });
 
 app.post("/codingtest_create/:jobId", function (req, res) {
+
     logger.info("On post route /codingtest_create/:jobId");
     const jobId = req.params.jobId;
     res.render("users/recruiter/create_codingtest", {
         jobId: jobId
     });
 });
+
 
 app.post("/create_codingtest/:jobId", async function (req, res) {
     logger.info("On post route /create_codingtest/:jobId");
@@ -856,6 +1003,7 @@ app.post("/create_codingtest/:jobId", async function (req, res) {
     });
 });
 
+
 app.post("/add_question/:jobId", function (req, res) {
     logger.info("On post route /add_question/:jobId");
     const jobId = req.params.jobId;
@@ -866,6 +1014,7 @@ app.post("/add_question/:jobId", function (req, res) {
     });
 
 });
+
 
 app.post("/question_add/:jobId", function (req, res) {
     logger.info("On post route /question_add/:jobId");
@@ -880,25 +1029,27 @@ app.post("/question_add/:jobId", function (req, res) {
         "answer": req.body.answer
     }
     console.log(req.body.answer)
-    Tests.findOneAndUpdate({
+    const ft = await Tests.findOneAndUpdate({
         jobId: jobId
     }, {
         $push: {
             questions: ques
         }
-    }, function (err, foundtests) {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log(foundtests);
-            res.render("users/recruiter/create_test", {
-                jobId: jobId,
-                questions: foundtests.questions
-            });
-        }
     });
 
+    const foundtests = await Tests.findOne({
+        jobId: jobId
+    });
+    console.log(foundtests);
+    res.render("users/recruiter/create_test", {
+        jobId: jobId,
+        questions: foundtests.questions
+    });
+
+
+
 });
+
 
 app.post("/view_score/:jobId/:mailid", function (req, res) {
     logger.info("On post route /view_score/:jobId/:mailid");
@@ -929,6 +1080,7 @@ app.post("/view_score/:jobId/:mailid", function (req, res) {
 });
 
 
+
 app.post("/reject_applicant/:jobId", async function (req, res) {
     logger.info("On post route /reject_applicant/:jobId");
     console.log(req.body);
@@ -957,6 +1109,7 @@ app.post("/reject_applicant/:jobId", async function (req, res) {
     });
 });
 
+
 app.post("/rejection_feedback/:jobId", function (req, res) {
     logger.info("On post route /rejection_feedback/:jobId");
     console.log(req.body.applicant);
@@ -976,6 +1129,7 @@ app.post("/rejection_feedback/:jobId", function (req, res) {
         text: "Rejection mail has been sent"
     });
 });
+
 
 app.post("/select_applicant/:jobId", async function (req, res) {
     logger.info("On post route /select_applicant/:jobId");
@@ -1011,6 +1165,7 @@ app.post("/select_applicant/:jobId", async function (req, res) {
     });
 });
 
+
 app.post("/proceed_next_stage/:jobId", function (req, res) {
     logger.info("On post route /proceed_next_stage/:jobId");
     console.log(req.body);
@@ -1024,6 +1179,7 @@ app.post("/proceed_next_stage/:jobId", function (req, res) {
         applicant: req.body.applicant
     });
 });
+
 
 
 app.post("/send_interview_invites", function (req, res) {
@@ -1052,6 +1208,7 @@ app.post("/send_interview_invites", function (req, res) {
         text: "Mail has been sent"
     });
 });
+
 
 app.get("/logout", function (req, res) {
     logger.info("On route /logout");
