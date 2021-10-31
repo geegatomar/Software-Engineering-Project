@@ -31,7 +31,7 @@ function listendom(no) {
     insertMessage();
 }
 
-$(window).load(function () {
+$(window).on("load", function () {
     console.log("Inside the window load, about to send first bot hello")
     $messages.mCustomScrollbar();
     setTimeout(function () {
@@ -91,7 +91,7 @@ function serverMessage(response2) {
 
 function fetchmsg() {
     console.log("Inside fetchmsg")
-    var url = '/send-msg';
+    var url = 'https://evil-werewolf-75549.herokuapp.com/send-msg';
 
     const data = new URLSearchParams();
     for (const pair of new FormData(document.getElementById("mymsg"))) {
