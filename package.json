@@ -14,7 +14,8 @@
   "author": "",
   "license": "ISC",
   "engines": {
-    "node": "10.19.0"
+    "node": "16.13.0",
+    "npm": "8.1.2"
   },
   "bugs": {
     "url": "https://github.com/Joshitha4/Software-Engineering-Project/issues"

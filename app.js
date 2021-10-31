@@ -16,8 +16,10 @@ const logger = log4js.getLogger();
 logger.level = "info";
 
 // For debugging purposes only
-var util = require('util');
-var encoder = new util.TextEncoder('utf-8');
+// var util = require('util');
+// var encoder = new util.TextEncoder('utf-8');
+const util = require('util');
+const TextEncoder = new util.TextEncoder();
 
 const dialogflow = require('@google-cloud/dialogflow');
 const uuid = require('uuid');
