@@ -35,7 +35,7 @@ app.use(session({
 }))
 
 // Make sure you create this userDB in mongodb
-mongoose.connect("mongodb://localhost:27017/userDB", {
+mongoose.connect("mongodb+srv://admin-shivangi:seproject@cluster0.sghya.mongodb.net/userDB", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     //useFindAndModify: false
@@ -166,9 +166,9 @@ app.get("/login", function (req, res) {
     res.render("login")
 });
 
-app.post("/register", function (req, res) {
-    logger.info("On post route /register")
-});
+// app.post("/register", function (req, res) {
+
+// });
 app.use(function (req, res, next) {
 
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -196,10 +196,10 @@ app.post('/send-msg', (req, res) => {
 async function runSample(msg, projectId = 'rsuite-bot-ayug') {
     // A unique identifier for the given session
 
-
+    console.log("Inside runSample");
     // Create a new session
     const sessionClient = new dialogflow.SessionsClient({
-        keyFilename: __dirname + "rsuite-bot-ayug-b786f924dfec.json"
+        keyFilename: __dirname + "/rsuite-bot-ayug-b786f924dfec.json"
     });
     const sessionPath = sessionClient.projectAgentSessionPath(
         projectId,
@@ -242,19 +242,20 @@ app.get("/chatbot", function (req, res) {
 });
 
 
-app.get("/", function (req, res) {
-    res.render("home")
-});
+// app.get("/", function (req, res) {
+//     res.render("home")
+// });
 
-app.get("/register", function (req, res) {
-    res.render("register")
-});
+// app.get("/register", function (req, res) {
+//     res.render("register")
+// });
 
-app.get("/login", function (req, res) {
-    res.render("login")
-});
+// app.get("/login", function (req, res) {
+//     res.render("login")
+// });
 
 app.post("/register", function (req, res) {
+    logger.info("On post route /register")
     console.log(req.body);
     // If a user with this email already exists
     User.exists({
@@ -1015,8 +1016,7 @@ app.post("/add_question/:jobId", function (req, res) {
 
 });
 
-
-app.post("/question_add/:jobId", function (req, res) {
+app.post("/question_add/:jobId", async function (req, res) {
     logger.info("On post route /question_add/:jobId");
     console.log(req.body);
     const jobId = req.params.jobId;
@@ -1045,9 +1045,6 @@ app.post("/question_add/:jobId", function (req, res) {
         jobId: jobId,
         questions: foundtests.questions
     });
-
-
-
 });
 
 
