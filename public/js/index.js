@@ -32,11 +32,11 @@ function listendom(no) {
 }
 
 $(window).load(function () {
+    console.log("Inside the window load, about to send first bot hello")
     $messages.mCustomScrollbar();
     setTimeout(function () {
-        serverMessage("hello i am customer support bot type hi and i will show you quick buttions");
+        serverMessage("Hello! I am customer support bot type hi and i will show you quick buttons");
     }, 100);
-
 });
 
 function updateScrollbar() {
@@ -49,6 +49,7 @@ function updateScrollbar() {
 
 
 function insertMessage() {
+    console.log("Calling insert message")
     msg = $('.message-input').val();
     if ($.trim(msg) == '') {
         return false;
@@ -63,6 +64,7 @@ function insertMessage() {
 
 document.getElementById("mymsg").onsubmit = (e) => {
     e.preventDefault()
+    console.log("About to call insertmessage")
     insertMessage();
     //serverMessage("hello");
     //speechSynthesis.speak(new SpeechSynthesisUtterance("hello"))
@@ -88,7 +90,7 @@ function serverMessage(response2) {
 
 
 function fetchmsg() {
-
+    console.log("Inside fetchmsg")
     var url = '/send-msg';
 
     const data = new URLSearchParams();
