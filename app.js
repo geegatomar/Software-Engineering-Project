@@ -19,7 +19,13 @@ logger.level = "info";
 const dialogflow = require('@google-cloud/dialogflow');
 const uuid = require('uuid');
 const sessionId = uuid.v4();
-const port = 3000;
+// const port = 3000;
+
+let port = process.env.PORT;
+if (port == null || port == "") {
+    port = 3000;
+}
+
 const path = require("path");
 app.use(express.static("public"));
 app.set("view engine", "ejs");
@@ -1214,6 +1220,6 @@ app.get("/logout", function (req, res) {
     res.redirect("/");
 });
 
-app.listen(3000, function () {
-    console.log("Server listening on port 3000");
+app.listen(port, function () {
+    console.log("Server has started successfully");
 });
