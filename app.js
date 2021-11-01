@@ -166,7 +166,9 @@ const testSchema = {
                 score: Number,
                 language: String,
                 input: String,
-                codingscore: Number
+                codingscore: Number,
+                mcqteststat: String,
+                codingteststat: String
             }
         }
     },
@@ -177,17 +179,17 @@ const testSchema = {
 
 const Tests = new mongoose.model("Tests", testSchema)
 
-app.get("/", function (req, res) {
+app.get("/", function(req, res) {
     logger.info("On route /");
     res.render("home")
 });
 
-app.get("/register", function (req, res) {
+app.get("/register", function(req, res) {
     logger.info("On route /register");
     res.render("register")
 });
 
-app.get("/login", function (req, res) {
+app.get("/login", function(req, res) {
     logger.info("On route /login");
     res.render("login")
 });
@@ -195,7 +197,7 @@ app.get("/login", function (req, res) {
 // app.post("/register", function (req, res) {
 
 // });
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
 
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -263,9 +265,9 @@ async function runSample(msg, projectId = 'rsuite-bot-ayug') {
 
 
 
-app.get("/chatbot", function (req, res) {
+app.get("/chatbot", function(req, res) {
     logger.info("On route /chatbot")
-    //res.sendFile(path.join(__dirname + '/views/botui/index.html'));
+        //res.sendFile(path.join(__dirname + '/views/botui/index.html'));
     res.render('index')
 });
 
@@ -282,13 +284,13 @@ app.get("/chatbot", function (req, res) {
 //     res.render("login")
 // });
 
-app.post("/register", function (req, res) {
+app.post("/register", function(req, res) {
     logger.info("On post route /register")
     console.log(req.body);
     // If a user with this email already exists
     User.exists({
         email: req.body.username
-    }, function (err, foundResult) {
+    }, function(err, foundResult) {
         if (err) {
             console.log(err);
         } else {
@@ -327,7 +329,7 @@ app.post("/register", function (req, res) {
                         description: "unavailable",
                         jobsAppliedTo: []
                     });
-                    newSeeker.save(function (err) {
+                    newSeeker.save(function(err) {
                         if (err) {
                             logger.error(err);
                             console.log(err);
@@ -344,7 +346,7 @@ app.post("/register", function (req, res) {
                         organization: req.session.userOrganization,
                         jobs: []
                     });
-                    newJobs.save(function (err) {
+                    newJobs.save(function(err) {
                         if (err) {
                             logger.error(err);
                             console.log(err);
@@ -354,7 +356,7 @@ app.post("/register", function (req, res) {
                         }
                     })
                 }
-                newUser.save(function (err) {
+                newUser.save(function(err) {
                     if (err) {
                         logger.error(err);
                         console.log("UNABLE TO REGISTER USER")
@@ -368,14 +370,14 @@ app.post("/register", function (req, res) {
     });
 });
 
-app.post("/login", function (req, res) {
+app.post("/login", function(req, res) {
     logger.info("On post route /login");
     const username = req.body.username;
     const password = req.body.password;
 
     User.findOne({
         email: username
-    }, function (err, foundUser) {
+    }, function(err, foundUser) {
         if (err) {
             logger.error(err);
             console.log("ERROR WHILE LOGIN")
@@ -410,7 +412,7 @@ app.post("/login", function (req, res) {
 });
 
 // This is the home page of either recruiter or seeker, depending on whose session has been logged in
-app.get("/home", function (req, res) {
+app.get("/home", function(req, res) {
     logger.info("On route /home");
     console.log(req.session);
     if (!('userEmail' in req.session)) {
@@ -431,13 +433,13 @@ app.get("/home", function (req, res) {
 })
 
 // To view my profile
-app.get("/profile", function (req, res) {
+app.get("/profile", function(req, res) {
     // We first fetch the required information from the DB
     logger.info("On route /profile");
     const userEmail = req.session.userEmail;
     Seeker.findOne({
         email: userEmail
-    }, function (err, foundUser) {
+    }, function(err, foundUser) {
         if (err) {
             console.log(err);
         } else {
@@ -455,14 +457,14 @@ app.get("/profile", function (req, res) {
 
 // To edit my profile
 
-app.get("/profile_edit", function (req, res) {
+app.get("/profile_edit", function(req, res) {
     logger.info("On route /profile_edit");
 
     // We first fetch the required information from the DB
     const userEmail = req.session.userEmail;
     Seeker.findOne({
         email: userEmail
-    }, function (err, foundUser) {
+    }, function(err, foundUser) {
         if (err) {
             console.log(err);
         } else {
@@ -479,7 +481,7 @@ app.get("/profile_edit", function (req, res) {
 
 // The route for after you submit the form for editting profile
 
-app.post("/profile_edit", async function (req, res) {
+app.post("/profile_edit", async function(req, res) {
 
     logger.info("On post route /profile_edit");
     console.log(req.body);
@@ -497,7 +499,7 @@ app.post("/profile_edit", async function (req, res) {
 
 // For seeker
 
-app.get("/view_all_jobs", async function (req, res) {
+app.get("/view_all_jobs", async function(req, res) {
     logger.info("On route /view_all_jobs");
     allJobsOfCompany = await Jobs.find();
     console.log(allJobsOfCompany);
@@ -507,7 +509,7 @@ app.get("/view_all_jobs", async function (req, res) {
 });
 
 
-app.post("/view_job/:jobId", function (req, res) {
+app.post("/view_job/:jobId", function(req, res) {
     logger.info("On post route /view_job/:jobId");
     const jobId = req.params.jobId;
     console.log(req.params.jobId);
@@ -515,7 +517,7 @@ app.post("/view_job/:jobId", function (req, res) {
     console.log(req.body.email);
     Jobs.findOne({
         email: req.body.email
-    }, function (err, foundJobs) {
+    }, function(err, foundJobs) {
         if (err) {
             console.log(err);
         } else {
@@ -537,7 +539,7 @@ app.post("/view_job/:jobId", function (req, res) {
 });
 
 
-app.post("/apply_for_job/:jobId", async function (req, res) {
+app.post("/apply_for_job/:jobId", async function(req, res) {
     logger.info("On post route /apply_for_job/:jobId");
 
     console.log(req.params.jobId);
@@ -553,6 +555,7 @@ app.post("/apply_for_job/:jobId", async function (req, res) {
     });
     let alreadyApplied = 0;
     console.log(foundSeeker1);
+
     foundSeeker1.jobsAppliedTo.forEach(function (job) {
         if (job.id == req.params.jobId) {
             console.log("Already applied");
@@ -598,7 +601,9 @@ app.post("/apply_for_job/:jobId", async function (req, res) {
             "score": null,
             "language": null,
             "input": null,
-            "codingscore": null
+            "codingscore": null,
+            "mcqteststat": "nottaken",
+            "codingteststat": "nottaken"
         }
         const updatedtest = await Tests.findOneAndUpdate({
                 jobId: req.params.jobId
@@ -619,7 +624,7 @@ app.post("/apply_for_job/:jobId", async function (req, res) {
 });
 
 
-app.get("/view_my_applied_jobs", async function (req, res) {
+app.get("/view_my_applied_jobs", async function(req, res) {
     logger.info("On route /view_my_applied_jobs");
     const email = req.session.userEmail;
     const foundSeeker = await Seeker.findOne({
@@ -631,33 +636,48 @@ app.get("/view_my_applied_jobs", async function (req, res) {
     });
 });
 
-app.post("/view_test/:jobId", function (req, res) {
+app.post("/view_test/:jobId", function(req, res) {
 
     logger.info("On post route /view_test/:jobId");
     const jobId = req.params.jobId;
     Tests.findOne({
         jobId: jobId
-    }, function (err, foundtest) {
+    }, function(err, foundtest) {
         if (err) {
             console.log(err);
         }
         console.log(jobId);
-        if (foundtest.statustest == "taken") {
+        if (foundtest.statustest == "notset") {
             res.render("random_base", {
-                text: "You have aldready taken the test"
+                text: "The test has not yet been created please wait"
             });
         } else {
-            res.render("users/seeker/view_test", {
-                jobId: jobId,
-                questions: foundtest.questions
-            });
+            let ch = 0;
+            for (let i = 0; i < foundtest.applicants.length; i++) {
+                if (foundtest.applicants[i].appemail == req.session.userEmail) {
+                    if (foundtest.applicants[i].mcqteststat == 'taken') {
+                        ch = 1;
+                    }
+                }
+            }
+            console.log(ch);
+            if (ch == 1) {
+                res.render("random_base", {
+                    text: "You have aldready taken the test!!"
+                });
+            } else {
+                res.render("users/seeker/view_test", {
+                    jobId: jobId,
+                    questions: foundtest.questions
+                });
+            }
         }
 
     });
 });
 
 
-app.post("/give_test/:jobId", async function (req, res) {
+app.post("/give_test/:jobId", async function(req, res) {
 
     logger.info("On post route /give_test/:jobId");
     count = 0;
@@ -680,15 +700,9 @@ app.post("/give_test/:jobId", async function (req, res) {
     console.log("See count");
     console.log(count);
 
-    const app = {
-        "appemail": req.session.userEmail,
-        "score": count,
-        "language": foundtest.applicants.language,
-        "input": foundtest.applicants.input,
-        "codingscore": foundtest.applicants.codingscore
-    }
+
     console.log("hey for update");
-    console.log(app);
+
     const updatescore = await Tests.findOneAndUpdate({
         jobId: jobId,
         "applicants.appemail": req.session.userEmail
@@ -698,9 +712,10 @@ app.post("/give_test/:jobId", async function (req, res) {
         }
     });
     const up = await Tests.findOneAndUpdate({
-        jobId: jobId
+        jobId: jobId,
+        "applicants.appemail": req.session.userEmail
     }, {
-        statustest: "taken"
+        "applicants.$.mcqteststat": "taken"
     });
     console.log(updatescore);
     // res.send("You have sucessfully completed and submitted your test!!");
@@ -710,13 +725,13 @@ app.post("/give_test/:jobId", async function (req, res) {
 });
 
 
-app.post("/view_codingtest/:jobId", function (req, res) {
+app.post("/view_codingtest/:jobId", function(req, res) {
 
     logger.info("On post route /view_codingtest/:jobId");
     const jobId = req.params.jobId;
     Tests.findOne({
         jobId: jobId
-    }, function (err, foundtest) {
+    }, function(err, foundtest) {
         if (err) {
             console.log(err);
         }
@@ -727,23 +742,39 @@ app.post("/view_codingtest/:jobId", function (req, res) {
         //         text: "This test has not been created yet."
         //     });
         // }
-        if (foundtest.statuscodingtest == "taken") {
+        if (foundtest.statuscodingtest == "notset") {
             res.render("random_base", {
-                text: "You have aldready taken the coding test"
+                text: "Please wait the test has not been created yet"
             });
         } else {
-            res.render("users/seeker/coding", {
-                jobId: jobId,
-                username: req.session.userEmail,
-                probname: foundtest.problem.problemname,
-                description: foundtest.problem.description
-            });
+            let ch = 0;
+            for (let i = 0; i < foundtest.applicants.length; i++) {
+                if (foundtest.applicants[i].appemail == req.session.userEmail) {
+                    if (foundtest.applicants[i].codingteststat == "taken") {
+                        ch = 1;
+                    }
+                }
+            }
+            console.log(ch);
+            if (ch == 1) {
+                res.render("random_base", {
+                    text: "You have aldready taken the test!!"
+                });
+            } else {
+                res.render("users/seeker/coding", {
+                    jobId: jobId,
+                    username: req.session.userEmail,
+                    probname: foundtest.problem.problemname,
+                    description: foundtest.problem.description
+                });
+
+            }
         }
     });
 });
 
 
-app.post("/getlanguage/:jobId", async function (req, res) {
+app.post("/getlanguage/:jobId", async function(req, res) {
 
     logger.info("On post route /getlanguage/:jobId");
     const jobId = req.params.jobId;
@@ -758,11 +789,13 @@ app.post("/getlanguage/:jobId", async function (req, res) {
     const inputcode = req.body.inputs;
     const inputcases = updatescore.problem.testcases;
     const up = await Tests.findOneAndUpdate({
-        jobId: jobId
+        jobId: jobId,
+        "applicants.appemail": req.session.userEmail
     }, {
-        statuscodingtest: "taken"
+        "applicants.$.codingteststat": "taken"
     });
-
+    console.log("showing up");
+    console.log(up);
     let data = {
         "code": inputcode,
         "language": language,
@@ -780,15 +813,15 @@ app.post("/getlanguage/:jobId", async function (req, res) {
     const response = await axios(config)
     console.log(response.data);
     const op = response.data
-    // axios(config)
-    //     .then(function(response) {
-    //         console.log(response.data);
-    //         console.log("hey1");
-    //         op = response.data;
-    //     })
-    //     .catch(function(error) {
-    //         console.log(error);
-    //     });
+        // axios(config)
+        //     .then(function(response) {
+        //         console.log(response.data);
+        //         console.log("hey1");
+        //         op = response.data;
+        //     })
+        //     .catch(function(error) {
+        //         console.log(error);
+        //     });
     console.log("seeop");
     console.log(op);
     let sc = 0;
@@ -821,13 +854,13 @@ app.post("/getlanguage/:jobId", async function (req, res) {
 
 // For recruiter
 
-app.get("/create_job", function (req, res) {
+app.get("/create_job", function(req, res) {
     logger.info("On route /create_job");
     res.render("users/recruiter/create_job");
 });
 
 
-app.post("/create_job", async function (req, res) {
+app.post("/create_job", async function(req, res) {
 
     logger.info("On post route /create_job");
     // Create job and add it to the DB
@@ -851,18 +884,18 @@ app.post("/create_job", async function (req, res) {
     await newApplicant.save();
 
     const prob = {
-        "problemname": "Needstobeset",
-        "description": "Needstobeset",
-        "testcases": "Needstobeset",
-        "expectedoutput": "Needstobeset"
-    }
-    //when a new job is created add it's entry to the test table
+            "problemname": "Needstobeset",
+            "description": "Needstobeset",
+            "testcases": "Needstobeset",
+            "expectedoutput": "Needstobeset"
+        }
+        //when a new job is created add it's entry to the test table
     const newtest = new Tests({
         jobId: id,
         email: req.session.userEmail,
         organization: req.session.userOrganization,
-        statustest: "nottaken",
-        statuscodingtest: "taken",
+        statustest: "notset",
+        statuscodingtest: "notset",
         questions: [],
         applicants: [],
         problem: prob
@@ -875,7 +908,7 @@ app.post("/create_job", async function (req, res) {
         $push: {
             jobs: job
         }
-    }, function (err, foundJobs) {
+    }, function(err, foundJobs) {
         if (err) {
             console.log(err);
         } else {
@@ -886,12 +919,12 @@ app.post("/create_job", async function (req, res) {
 });
 
 
-app.get("/view_my_postings", function (req, res) {
+app.get("/view_my_postings", function(req, res) {
     logger.info("On route /view_my_postings");
 
     Jobs.findOne({
         email: req.session.userEmail
-    }, function (err, updatedJobs) {
+    }, function(err, updatedJobs) {
         if (err) {
             console.log(err);
         }
@@ -903,13 +936,13 @@ app.get("/view_my_postings", function (req, res) {
     });
 });
 
-app.post("/search_for_recruiter", function (req, res) {
+app.post("/search_for_recruiter", function(req, res) {
 
     logger.info("On post route /search_for_recruiter");
     console.log(req.body);
     Jobs.findOne({
         email: req.session.userEmail
-    }, function (err, foundJobs) {
+    }, function(err, foundJobs) {
         matchedJobs = [];
         foundJobs.jobs.forEach((job) => {
             if (job.title == req.body.search) {
@@ -924,7 +957,7 @@ app.post("/search_for_recruiter", function (req, res) {
 
 
 
-app.post("/search_for_seeker", async function (req, res) {
+app.post("/search_for_seeker", async function(req, res) {
     logger.info("On post route /search_for_seeker");
     console.log(req.body);
     foundJobs = await Jobs.find();
@@ -953,7 +986,7 @@ app.post("/search_for_seeker", async function (req, res) {
 });
 
 
-app.post("/view_applicants/:jobId", async function (req, res) {
+app.post("/view_applicants/:jobId", async function(req, res) {
 
     logger.info("On post route /view_applicants/:jobId");
     console.log(req.params.jobId);
@@ -961,7 +994,7 @@ app.post("/view_applicants/:jobId", async function (req, res) {
 
     Applicant.findOne({
         jobId: jobId
-    }, function (err, foundApplicant) {
+    }, function(err, foundApplicant) {
         if (err) {
             console.log(err);
         } else {
@@ -975,13 +1008,13 @@ app.post("/view_applicants/:jobId", async function (req, res) {
 });
 
 
-app.post("/test_create/:jobId", function (req, res) {
+app.post("/test_create/:jobId", function(req, res) {
 
     logger.info("On post route /test_create/:jobId");
     const jobId = req.params.jobId;
     Tests.findOne({
         jobId: jobId
-    }, function (err, foundtest) {
+    }, function(err, foundtest) {
         if (err) {
             console.log(err);
         } else {
@@ -994,7 +1027,7 @@ app.post("/test_create/:jobId", function (req, res) {
     })
 });
 
-app.post("/codingtest_create/:jobId", function (req, res) {
+app.post("/codingtest_create/:jobId", function(req, res) {
 
     logger.info("On post route /codingtest_create/:jobId");
     const jobId = req.params.jobId;
@@ -1004,7 +1037,7 @@ app.post("/codingtest_create/:jobId", function (req, res) {
 });
 
 
-app.post("/create_codingtest/:jobId", async function (req, res) {
+app.post("/create_codingtest/:jobId", async function(req, res) {
     logger.info("On post route /create_codingtest/:jobId");
     const jobId = req.params.jobId;
     console.log("hey2");
@@ -1018,7 +1051,8 @@ app.post("/create_codingtest/:jobId", async function (req, res) {
     const foundtest = await Tests.findOneAndUpdate({
         jobId: jobId
     }, {
-        problem: prob
+        problem: prob,
+        statuscodingtest: "set"
     });
     console.log(prob);
     console.log(foundtest);
@@ -1029,7 +1063,7 @@ app.post("/create_codingtest/:jobId", async function (req, res) {
 });
 
 
-app.post("/add_question/:jobId", function (req, res) {
+app.post("/add_question/:jobId", function(req, res) {
     logger.info("On post route /add_question/:jobId");
     const jobId = req.params.jobId;
     console.log(jobId);
@@ -1040,7 +1074,7 @@ app.post("/add_question/:jobId", function (req, res) {
 
 });
 
-app.post("/question_add/:jobId", async function (req, res) {
+app.post("/question_add/:jobId", async function(req, res) {
     logger.info("On post route /question_add/:jobId");
     console.log(req.body);
     const jobId = req.params.jobId;
@@ -1061,8 +1095,10 @@ app.post("/question_add/:jobId", async function (req, res) {
         }
     });
 
-    const foundtests = await Tests.findOne({
+    const foundtests = await Tests.findOneAndUpdate({
         jobId: jobId
+    }, {
+        statustest: "set"
     });
     console.log(foundtests);
     res.render("users/recruiter/create_test", {
@@ -1072,14 +1108,14 @@ app.post("/question_add/:jobId", async function (req, res) {
 });
 
 
-app.post("/view_score/:jobId/:mailid", function (req, res) {
+app.post("/view_score/:jobId/:mailid", function(req, res) {
     logger.info("On post route /view_score/:jobId/:mailid");
     console.log("hey");
     const jobId = req.params.jobId;
     const mailid = req.params.mailid;
     Tests.findOne({
         jobId: jobId
-    }, function (err, foundtest) {
+    }, function(err, foundtest) {
         if (err) {
             console.log(err);
         } else {
@@ -1102,7 +1138,7 @@ app.post("/view_score/:jobId/:mailid", function (req, res) {
 
 
 
-app.post("/reject_applicant/:jobId", async function (req, res) {
+app.post("/reject_applicant/:jobId", async function(req, res) {
     logger.info("On post route /reject_applicant/:jobId");
     console.log(req.body);
     console.log(req.params.jobId);
@@ -1131,7 +1167,7 @@ app.post("/reject_applicant/:jobId", async function (req, res) {
 });
 
 
-app.post("/rejection_feedback/:jobId", function (req, res) {
+app.post("/rejection_feedback/:jobId", function(req, res) {
     logger.info("On post route /rejection_feedback/:jobId");
     console.log(req.body.applicant);
     console.log(req.params.jobId);
@@ -1152,7 +1188,7 @@ app.post("/rejection_feedback/:jobId", function (req, res) {
 });
 
 
-app.post("/select_applicant/:jobId", async function (req, res) {
+app.post("/select_applicant/:jobId", async function(req, res) {
     logger.info("On post route /select_applicant/:jobId");
     const jobId = req.params.jobId;
     console.log(req.body);
@@ -1187,7 +1223,7 @@ app.post("/select_applicant/:jobId", async function (req, res) {
 });
 
 
-app.post("/proceed_next_stage/:jobId", function (req, res) {
+app.post("/proceed_next_stage/:jobId", function(req, res) {
     logger.info("On post route /proceed_next_stage/:jobId");
     console.log(req.body);
     console.log(req.params.jobId);
@@ -1203,7 +1239,7 @@ app.post("/proceed_next_stage/:jobId", function (req, res) {
 
 
 
-app.post("/send_interview_invites", function (req, res) {
+app.post("/send_interview_invites", function(req, res) {
     logger.info("On post route /send_interview_invites");
     console.log(req.body);
     console.log(req.body.applicant);
@@ -1231,13 +1267,13 @@ app.post("/send_interview_invites", function (req, res) {
 });
 
 
-app.get("/logout", function (req, res) {
+app.get("/logout", function(req, res) {
     logger.info("On route /logout");
     // Destroying the session when we logout
     req.session.destroy();
     res.redirect("/");
 });
 
-app.listen(port, function () {
+app.listen(port, function() {
     console.log("Server has started successfully");
 });

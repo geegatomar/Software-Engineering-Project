@@ -12,7 +12,7 @@ try {
     $('.no-browser-support').show();
 }
 
-$('#start-record-btn').on('click', function (e) {
+$('#start-record-btn').on('click', function(e) {
     recognition.start();
 });
 
@@ -26,15 +26,15 @@ recognition.onresult = (event) => {
 
 function listendom(no) {
     console.log(no)
-    //console.log(document.getElementById(no))
+        //console.log(document.getElementById(no))
     document.getElementById("MSG").value = no.innerHTML;
     insertMessage();
 }
 
-$(window).on("load", function () {
+$(window).on("load", function() {
     console.log("Inside the window load, about to send first bot hello")
     $messages.mCustomScrollbar();
-    setTimeout(function () {
+    setTimeout(function() {
         serverMessage("Hello! I am customer support bot type hi and i will show you quick buttons");
     }, 100);
 });
@@ -80,7 +80,7 @@ function serverMessage(response2) {
     updateScrollbar();
 
 
-    setTimeout(function () {
+    setTimeout(function() {
         $('.message.loading').remove();
         $('<div class="message new"><figure class="avatar"><img src="css/bot.png" /></figure>' + response2 + '</div>').appendTo($('.mCSB_container')).addClass('new');
         updateScrollbar();
@@ -108,8 +108,6 @@ function fetchmsg() {
             console.log(response);
             serverMessage(response.Reply);
             speechSynthesis.speak(new SpeechSynthesisUtterance(response.Reply))
-
-
         })
         .catch(error => console.error('Error h:', error));
 
