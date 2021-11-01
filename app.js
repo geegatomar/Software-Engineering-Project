@@ -10,6 +10,7 @@ var axios = require('axios');
 const app = express();
 // Require log4js
 const log4js = require("log4js");
+const encrypt = require("mongoose-encryption");
 
 // Create the logger
 const logger = log4js.getLogger();
@@ -53,12 +54,26 @@ mongoose.connect("mongodb+srv://admin-shivangi:seproject@cluster0.sghya.mongodb.
 });
 
 // The user_type in userSchema indicates if its a recruiter or a job seeker
-const userSchema = {
+// const userSchema = {
+//     email: String,
+//     password: String,
+//     user_type: String,
+//     organization: String
+// };
+const userSchema = new mongoose.Schema({
     email: String,
     password: String,
     user_type: String,
     organization: String
-};
+});
+
+// Adding encryption to the project, for authentication.
+const secret = "ThisIsOurSecretForEncryptingPasswords_DontChangeThis."
+userSchema.plugin(encrypt, {
+    secret: secret,
+    encryptedFields: ["password"]
+})
+
 const User = new mongoose.model("User", userSchema);
 
 
@@ -537,16 +552,13 @@ app.post("/apply_for_job/:jobId", async function (req, res) {
         console.error(err);
     });
     let alreadyApplied = 0;
-    console.log("=======================================================\n\n");
     console.log(foundSeeker1);
     foundSeeker1.jobsAppliedTo.forEach(function (job) {
-        console.log("++++++++++++++++ ", job.id, req.params.jobId);
         if (job.id == req.params.jobId) {
             console.log("Already applied");
             // Setting the flag to 1
             alreadyApplied = 1;
             // res.send("Already applied");
-
         }
     });
 
@@ -556,7 +568,6 @@ app.post("/apply_for_job/:jobId", async function (req, res) {
         });
     } else {
         // Find the user and update the jobs they applied to
-
         const foundSeeker = await Seeker.findOneAndUpdate({
             email: applicant
         }, {
