@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/.bin/jest --coverage",
-    "start": "nodemon app.js"
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
@@ -13,6 +13,10 @@
   },
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": "16.13.0",
+    "npm": "8.1.2"
+  },
   "bugs": {
     "url": "https://github.com/Joshitha4/Software-Engineering-Project/issues"
   },
@@ -22,12 +26,13 @@
     "axios": "^0.23.0",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
-    "dialogflow": "^1.2.0",
+    "dialogflow": "^4.0.3",
     "ejs": "^3.1.6",
     "express": "^4.17.1",
     "express-session": "^1.17.2",
     "ical-generator": "^3.0.1",
     "jest-cli": "^27.3.1",
+    "log4js": "^6.3.0",
     "mongoose": "^6.0.12",
     "nodemailer": "^6.7.0",
     "nodemon": "^2.0.14",
@@ -36,5 +41,8 @@
   },
   "devDependencies": {
     "jest": "^27.3.1"
+  },
+  "optionalDependencies": {
+    "fsevents": "^2.3.2"
   }
 }
